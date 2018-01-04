@@ -108,7 +108,7 @@
     "prebuild:es8-es2017": "npm run lint && npm run clean",
     "build:es8-es2017": "npm run transpile:typescript:es8-es2017",
     "postbuild:es8-es2017": "npm run afterdist",
-    "clean": "rimraf ./dist && rimraf ./now && mkdirp ./dist",
+    "clean": "rimraf ./dist && mkdirp ./dist",
     "lint": "npm run lint:all && npm run lint:typescript:full",
     "lint:all": "eclint check \"**/*\" \"!**/*.node\" \"!.git/**/*\" \"!node_modules*/**/*\" \"!dist/**/*\" \"!misc/**/*\" \"!now/**/*\" \"!.vscode/**/*\" \"!.history/**/*\" \"!**/.DS_Store\" \"!**/*.epub\" \"!**/*.cbz\" \"!**/*.jpg\" \"!**/*.jpeg\" \"!**/*.png\" \"!**/*.log\"",
     "lint:typescript": "tslint -c \"./tslint.json\" \"./src/**/*.ts\" \"./test/**/*.ts\"",
