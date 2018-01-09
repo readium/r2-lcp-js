@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@types/debug": "^0.0.30",
-    "@types/node": "^8.5.2",
+    "@types/node": "^9.3.0",
     "@types/request": "^2.0.9",
     "@types/request-promise-native": "^1.0.10",
     "@types/urijs": "^1.15.34",
