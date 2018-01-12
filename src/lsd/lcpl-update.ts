@@ -45,7 +45,8 @@ export async function lsdLcpUpdate(
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             // SEE: https://github.com/readium/readium-lcp-server/issues/150#issuecomment-356993350
                             // if (licenseLink.href.indexOf("/licenses/") > 0) {
-                            //     licenseLink.href = licenseLink.href.replace("/licenses/", "/api/v1/purchases/license/");
+                            //     licenseLink.href = licenseLink.href.replace("/licenses/",
+                            // "/api/v1/purchases/license/");
                             //     debug("TRYING AGAIN: " + licenseLink.href);
                             //     let newRes: any;
                             //     try {
