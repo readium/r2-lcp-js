@@ -68,7 +68,13 @@ export async function launchStatusDocumentProcessing(
             return;
         }
         const responseStr = responseData.toString("utf8");
-        if (response.headers["content-type"] === "application/vnd.readium.license.status.v1.0+json" ||
+
+        // https://github.com/readium/readium-lcp-specs/issues/15#issuecomment-358247286
+        // application/vnd.readium.lcp.license-1.0+json (LEGACY)
+        // application/vnd.readium.lcp.license.v1.0+json (NEW)
+        // application/vnd.readium.license.status.v1.0+json (LSD)
+        const mime = "application/vnd.readium.license.status.v1.0+json";
+        if (response.headers["content-type"] === mime ||
             response.headers["content-type"] === "application/json") {
             debug(responseStr);
         }
