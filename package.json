@@ -58,7 +58,7 @@
   "devDependencies": {
     "@types/debug": "^0.0.30",
     "@types/node": "^9.3.0",
-    "@types/request": "^2.0.11",
+    "@types/request": "^2.0.12",
     "@types/request-promise-native": "^1.0.10",
     "@types/urijs": "^1.15.34",
     "cpy-cli": "^1.0.1",
