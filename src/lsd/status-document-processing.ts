@@ -61,12 +61,6 @@ export async function launchStatusDocumentProcessing(
             }
             return;
         }
-        if (!responseData) {
-            if (onStatusDocumentProcessingComplete) {
-                onStatusDocumentProcessingComplete(undefined);
-            }
-            return;
-        }
         const responseStr = responseData.toString("utf8");
 
         // https://github.com/readium/readium-lcp-specs/issues/15#issuecomment-358247286

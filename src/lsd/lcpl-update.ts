@@ -70,9 +70,6 @@ export async function lsdLcpUpdate(
                             reject(err);
                             return;
                         }
-                        if (!responseData) {
-                            return;
-                        }
                         const lcplStr = responseData.toString("utf8");
                         debug(lcplStr);
                         resolve(lcplStr);

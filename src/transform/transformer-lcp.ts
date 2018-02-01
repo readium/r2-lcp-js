@@ -395,9 +395,6 @@ export async function transformStream(
                 debug(err);
                 return Promise.reject(err);
             }
-            if (!resetedStream) {
-                return Promise.reject("??");
-            }
 
             return transformStream(
                 lcp, linkHref, linkPropertiesEncrypted,

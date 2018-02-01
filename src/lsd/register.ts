@@ -78,9 +78,6 @@ export async function lsdRegister(
                 reject(err);
                 return;
             }
-            if (!responseData) {
-                return;
-            }
             const responseStr = responseData.toString("utf8");
             debug(responseStr);
             const responseJson = global.JSON.parse(responseStr);
