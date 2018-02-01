@@ -8,15 +8,15 @@ import {
 @JsonObject()
 export class User {
     @JsonProperty("id")
-    public ID: string;
+    public ID!: string;
 
     @JsonProperty("email")
-    public Email: string;
+    public Email!: string;
 
     @JsonProperty("name")
-    public Name: string;
+    public Name!: string;
 
     @JsonProperty("encrypted")
     @JsonElementType(String)
-    public Encrypted: string[];
+    public Encrypted!: string[];
 }

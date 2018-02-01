@@ -8,21 +8,21 @@ import {
 export class Encrypted {
 
     @JsonProperty("scheme")
-    public Scheme: string;
+    public Scheme!: string;
 
     @JsonProperty("profile")
-    public Profile: string;
+    public Profile!: string;
 
     @JsonProperty("algorithm")
-    public Algorithm: string;
+    public Algorithm!: string;
 
     @JsonProperty("compression")
-    public Compression: string;
+    public Compression!: string;
 
     @JsonProperty("original-length")
-    public OriginalLength: number;
+    public OriginalLength!: number;
 
     public DecryptedLengthBeforeInflate: number = -1;
     public CypherBlockPadding: number = -1;
-    public CypherBlockIV: string; // Buffer | undefined;
+    public CypherBlockIV: string | undefined; // Buffer | undefined;
 }

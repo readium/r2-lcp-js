@@ -7,11 +7,11 @@ import {
 @JsonObject()
 export class UserKey {
     @JsonProperty("text_hint")
-    public TextHint: string;
+    public TextHint!: string;
 
     @JsonProperty("algorithm")
-    public Algorithm: string;
+    public Algorithm!: string;
 
     @JsonProperty("key_check")
-    public KeyCheck: string;
+    public KeyCheck!: string;
 }

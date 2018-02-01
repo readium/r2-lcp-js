@@ -7,28 +7,28 @@ import {
 @JsonObject()
 export class Link {
     @JsonProperty("length")
-    public Length: number;
+    public Length!: number;
 
     @JsonProperty("href")
-    public Href: string;
+    public Href!: string;
 
     @JsonProperty("title")
-    public Title: string;
+    public Title!: string;
 
     @JsonProperty("type")
-    public Type: string;
+    public Type!: string;
 
     @JsonProperty("templated")
-    public Templated: string;
+    public Templated!: string;
 
     @JsonProperty("profile")
-    public Profile: string;
+    public Profile!: string;
 
     @JsonProperty("hash")
-    public Hash: string;
+    public Hash!: string;
 
     @JsonProperty("rel")
-    public Rel: string;
+    public Rel!: string;
 
     public HasRel(rel: string): boolean {
         return this.Rel === rel;

@@ -35,35 +35,35 @@ export function setLcpNativePluginPath(filepath: string): boolean {
 @JsonObject()
 export class LCP {
     @JsonProperty("id")
-    public ID: string;
+    public ID!: string;
 
     @JsonProperty("provider")
-    public Provider: string;
+    public Provider!: string;
 
     @JsonProperty("issued")
-    public Issued: Date;
+    public Issued!: Date;
 
     @JsonProperty("updated")
-    public Updated: Date;
+    public Updated!: Date;
 
     @JsonProperty("encryption")
-    public Encryption: Encryption;
+    public Encryption!: Encryption;
 
     @JsonProperty("rights")
-    public Rights: Rights;
+    public Rights!: Rights;
 
     @JsonProperty("user")
-    public User: User;
+    public User!: User;
 
     @JsonProperty("signature")
-    public Signature: Signature;
+    public Signature!: Signature;
 
     @JsonProperty("links")
     @JsonElementType(Link)
-    public Links: Link[];
+    public Links!: Link[];
 
-    public ZipPath: string;
-    public JsonSource: string;
+    public ZipPath: string | undefined;
+    public JsonSource: string | undefined;
 
     public LSDJson: any;
 

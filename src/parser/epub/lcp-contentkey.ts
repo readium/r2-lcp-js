@@ -7,8 +7,8 @@ import {
 @JsonObject()
 export class ContentKey {
     @JsonProperty("encrypted_value")
-    public EncryptedValue: string;
+    public EncryptedValue!: string;
 
     @JsonProperty("algorithm")
-    public Algorithm: string;
+    public Algorithm!: string;
 }

@@ -10,11 +10,11 @@ import { UserKey } from "./lcp-userkey";
 @JsonObject()
 export class Encryption {
     @JsonProperty("profile")
-    public Profile: string;
+    public Profile!: string;
 
     @JsonProperty("content_key")
-    public ContentKey: ContentKey;
+    public ContentKey!: ContentKey;
 
     @JsonProperty("user_key")
-    public UserKey: UserKey;
+    public UserKey!: UserKey;
 }

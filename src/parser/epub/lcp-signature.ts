@@ -7,11 +7,11 @@ import {
 @JsonObject()
 export class Signature {
     @JsonProperty("algorithm")
-    public Algorithm: string;
+    public Algorithm!: string;
 
     @JsonProperty("certificate")
-    public Certificate: string;
+    public Certificate!: string;
 
     @JsonProperty("value")
-    public Value: string;
+    public Value!: string;
 }

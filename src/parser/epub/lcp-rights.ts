@@ -7,14 +7,14 @@ import {
 @JsonObject()
 export class Rights {
     @JsonProperty("print")
-    public Print: number;
+    public Print!: number;
 
     @JsonProperty("copy")
-    public Copy: number;
+    public Copy!: number;
 
     @JsonProperty("start")
-    public Start: Date;
+    public Start!: Date;
 
     @JsonProperty("end")
-    public End: Date;
+    public End!: Date;
 }
