@@ -60,7 +60,7 @@
     "@types/debug": "^0.0.30",
     "@types/node": "^9.4.0",
     "@types/request": "^2.47.0",
-    "@types/request-promise-native": "^1.0.12",
+    "@types/request-promise-native": "^1.0.13",
     "@types/urijs": "^1.15.34",
     "cpy-cli": "^1.0.1",
     "cross-env": "^5.1.3",
