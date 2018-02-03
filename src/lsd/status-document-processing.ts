@@ -8,7 +8,7 @@ import { IDeviceIDManager } from "./deviceid-manager";
 import { lsdLcpUpdate } from "./lcpl-update";
 import { lsdRegister } from "./register";
 
-const debug = debug_("r2:lcp:lsd:processing");
+const debug = debug_("r2:lcp#lsd/status-document-processing");
 
 export async function launchStatusDocumentProcessing(
     lcp: LCP,

@@ -6,7 +6,7 @@ import * as requestPromise from "request-promise-native";
 
 import { LCP } from "../parser/epub/lcp";
 
-const debug = debug_("r2:lcp:lsd:lcpl-update");
+const debug = debug_("r2:lcp#lsd/lcpl-update");
 
 export async function lsdLcpUpdate(
     lsdJson: any,

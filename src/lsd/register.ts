@@ -7,7 +7,7 @@ import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
 
-const debug = debug_("r2:lcp:lsd:register");
+const debug = debug_("r2:lcp#lsd/register");
 
 export async function lsdRegister(
     lsdJson: any,

@@ -7,7 +7,7 @@ import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
 
-const debug = debug_("r2:electron:main:lsd");
+const debug = debug_("r2:lcp#lsd/return");
 
 export async function lsdReturn(
     lsdJson: any,

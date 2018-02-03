@@ -12,8 +12,7 @@ import { bufferToStream, streamToBufferPromise } from "@utils/stream/BufferUtils
 // import { CounterPassThroughStream } from "@utils/stream/CounterPassThroughStream";
 // import { Transform } from "stream";
 
-const debug = debug_("r2:transformer:lcp");
-// const debugx = debug_("r2:transformer:stream:lcp");
+const debug = debug_("r2:lcp#transform/transformer-lcp");
 
 const AES_BLOCK_SIZE = 16;
 

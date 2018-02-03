@@ -9,7 +9,7 @@ import { JSON as TAJSON } from "ta-json";
 
 import { LCP } from "./parser/epub/lcp";
 
-const debug = debug_("r2:lcp:epub-download");
+const debug = debug_("r2:lcp#publication-download");
 
 export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFileName: string): Promise<string[]> {
 

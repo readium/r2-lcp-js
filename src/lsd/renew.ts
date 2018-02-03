@@ -8,7 +8,7 @@ import { IDeviceIDManager } from "./deviceid-manager";
 import URI = require("urijs");
 import URITemplate = require("urijs/src/URITemplate");
 
-const debug = debug_("r2:electron:main:lsd");
+const debug = debug_("r2:lcp#lsd/renew");
 
 export async function lsdRenew(
     end: Date | undefined,
