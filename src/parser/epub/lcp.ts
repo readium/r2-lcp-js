@@ -32,10 +32,6 @@ export function setLcpNativePluginPath(filepath: string): boolean {
     return exists;
 }
 
-export interface ITryLcpUserKeyResult {
-    okay: boolean;
-}
-
 @JsonObject()
 export class LCP {
     @JsonProperty("id")
@@ -156,7 +152,7 @@ export class LCP {
         });
     }
 
-    public async tryUserKeys(lcpUserKeys: string[]): Promise<ITryLcpUserKeyResult> {
+    public async tryUserKeys(lcpUserKeys: string[]) {
         this.init();
 
         const check = (this.Encryption.Profile === "http://readium.org/lcp/basic-profile"
@@ -175,7 +171,7 @@ export class LCP {
 
         if (this._usesNativeNodePlugin) {
 
-            return new Promise<ITryLcpUserKeyResult>((resolve, reject) => {
+            return new Promise((resolve, reject) => {
 
                 this._lcpNative.findOneValidPassphrase(
                     this.JsonSource,
@@ -235,7 +231,7 @@ export class LCP {
                                 //     },
                                 // );
 
-                                resolve({ okay: true });
+                                resolve();
                             },
                         );
                     },
@@ -244,10 +240,10 @@ export class LCP {
         }
 
         for (const lcpUserKey of lcpUserKeys) {
-            let res: ITryLcpUserKeyResult;
             try {
-                res = await this.tryUserKey(lcpUserKey);
-                return Promise.resolve(res);
+                if (this.tryUserKey(lcpUserKey)) {
+                    return Promise.resolve();
+                }
             } catch (err) {
                 // debug(err);
                 // ignore
@@ -256,7 +252,7 @@ export class LCP {
         return Promise.reject(1); // "Pass fail."
     }
 
-    private async tryUserKey(lcpUserKey: string): Promise<ITryLcpUserKeyResult> {
+    private tryUserKey(lcpUserKey: string): boolean {
 
         // const userKey = forge.util.hexToBytes(passPhrase);
         const userKey = new Buffer(lcpUserKey, "hex");
@@ -339,7 +335,7 @@ export class LCP {
 
         if (this.ID !== decryptedOut) {
             debug("Failed LCP ID check.");
-            return Promise.reject("Failed LCP ID check.");
+            return false;
         }
 
         const encryptedContentKey =
@@ -399,6 +395,6 @@ export class LCP {
         //     //     + digest.toHex() + " // " + userKey.length);
         // }
 
-        return Promise.resolve({ okay: true });
+        return true;
     }
 }
