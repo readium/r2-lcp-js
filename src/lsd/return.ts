@@ -24,8 +24,21 @@ export async function lsdReturn(
         return Promise.reject("No LSD return link!");
     }
 
-    const deviceID = deviceIDManager.getDeviceID();
-    const deviceNAME = deviceIDManager.getDeviceNAME();
+    let deviceID: string;
+    try {
+        deviceID = await deviceIDManager.getDeviceID();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device ID !?");
+    }
+
+    let deviceNAME: string;
+    try {
+        deviceNAME = await deviceIDManager.getDeviceNAME();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device NAME !?");
+    }
 
     let returnURL = licenseReturn.href;
     if (licenseReturn.templated === true || licenseReturn.templated === "true") {

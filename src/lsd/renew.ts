@@ -26,8 +26,21 @@ export async function lsdRenew(
         return Promise.reject("No LSD renew link!");
     }
 
-    const deviceID = deviceIDManager.getDeviceID();
-    const deviceNAME = deviceIDManager.getDeviceNAME();
+    let deviceID: string;
+    try {
+        deviceID = await deviceIDManager.getDeviceID();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device ID !?");
+    }
+
+    let deviceNAME: string;
+    try {
+        deviceNAME = await deviceIDManager.getDeviceNAME();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device NAME !?");
+    }
 
     let renewURL = licenseRenew.href;
     if (licenseRenew.templated === true || licenseRenew.templated === "true") {

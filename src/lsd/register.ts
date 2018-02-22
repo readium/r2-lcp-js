@@ -24,14 +24,36 @@ export async function lsdRegister(
         return Promise.reject("No LSD register link!");
     }
 
-    const deviceID = deviceIDManager.getDeviceID();
-    const deviceNAME = deviceIDManager.getDeviceNAME();
+    let deviceID: string;
+    try {
+        deviceID = await deviceIDManager.getDeviceID();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device ID !?");
+    }
+
+    let deviceNAME: string;
+    try {
+        deviceNAME = await deviceIDManager.getDeviceNAME();
+    } catch (err) {
+        debug(err);
+        return Promise.reject("Problem getting Device NAME !?");
+    }
 
     let doRegister = false;
     if (lsdJson.status === "ready") {
         doRegister = true;
     } else if (lsdJson.status === "active") {
-        const deviceIDForStatusDoc = deviceIDManager.checkDeviceID(lsdJson.id);
+
+        let deviceIDForStatusDoc: string | undefined;
+        try {
+            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsdJson.id);
+        } catch (err) {
+            debug(err);
+            // ignore
+            // return Promise.reject("xxx");
+        }
+
         if (!deviceIDForStatusDoc) {
             doRegister = true;
         } else if (deviceIDForStatusDoc !== deviceID) {
@@ -84,7 +106,13 @@ export async function lsdRegister(
             debug(responseJson);
 
             if (responseJson.status === "active") {
-                deviceIDManager.recordDeviceID(responseJson.id);
+                try {
+                    await deviceIDManager.recordDeviceID(responseJson.id);
+                } catch (err) {
+                    debug(err);
+                    // reject(err);
+                    // return;
+                }
             }
 
             resolve(responseJson);
