@@ -58,10 +58,10 @@
   },
   "devDependencies": {
     "@types/debug": "^0.0.30",
-    "@types/node": "^9.4.7",
+    "@types/node": "^9.6.0",
     "@types/request": "^2.47.0",
     "@types/request-promise-native": "^1.0.14",
-    "@types/urijs": "^1.15.36",
+    "@types/urijs": "^1.15.37",
     "cpy-cli": "github:sindresorhus/cpy-cli#nodir",
     "cross-env": "^5.1.4",
     "cson": "^5.1.0",
@@ -72,8 +72,8 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
-    "tslint-language-service": "^0.9.8",
-    "typescript": "^2.7.2"
+    "tslint-language-service": "^0.9.9",
+    "typescript": "^2.8.1"
   },
   "files": [
     "LICENSE",
