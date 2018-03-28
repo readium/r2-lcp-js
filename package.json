@@ -1,6 +1,6 @@
 {
   "name": "r2-lcp-js",
-  "version": "v1.0.0-alpha.1",
+  "version": "1.0.0-alpha.1",
   "description": "Readium 2 LCP bits for NodeJS (TypeScript)",
   "keywords": [
     "readium",
