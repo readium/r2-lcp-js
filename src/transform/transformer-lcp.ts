@@ -5,50 +5,51 @@
 // that can be found in the LICENSE file exposed on Github (readium) in the project repository.
 // ==LICENSE-END==
 
-import * as crypto from "crypto";
-import * as zlib from "zlib";
+// import * as crypto from "crypto";
+// import * as zlib from "zlib";
 
 import { Encrypted } from "@models/metadata-encrypted";
-import { IDecryptedBuffer, LCP } from "@parser/epub/lcp";
-import { RangeStream } from "@utils/stream/RangeStream";
+// import { IDecryptedBuffer, LCP } from "@parser/epub/lcp";
+import { LCP } from "@parser/epub/lcp";
+// import { RangeStream } from "@utils/stream/RangeStream";
 import { IStreamAndLength } from "@utils/zip/zip";
 import * as debug_ from "debug";
 
 // import * as forge from "node-forge";
-import { bufferToStream, streamToBufferPromise } from "@utils/stream/BufferUtils";
+// import { bufferToStream, streamToBufferPromise } from "@utils/stream/BufferUtils";
 // import { CounterPassThroughStream } from "@utils/stream/CounterPassThroughStream";
 // import { Transform } from "stream";
 
 const debug = debug_("r2:lcp#transform/transformer-lcp");
 
-const AES_BLOCK_SIZE = 16;
+// const AES_BLOCK_SIZE = 16;
 
 // let streamCounter = 0;
 
-const readStream = async (s: NodeJS.ReadableStream, n: number): Promise<Buffer> => {
-    return new Promise<Buffer>((resolve, reject) => {
-        // s.pause();
-        const onReadable = () => {
-            // debug("readStream READABLE");
-            const b = s.read(n);
-            s.removeListener("readable", onReadable);
-            s.removeListener("error", reject);
-            // s.resume();
-            resolve(b as Buffer);
-        };
-        s.on("readable", onReadable);
-        s.on("error", reject);
-        // s.on("end", () => {
-        //     debug("readStream END");
-        // });
-        // s.on("drain", () => {
-        //     debug("readStream DRAIN");
-        // });
-        // s.on("finish", () => {
-        //     debug("readStream FINISH");
-        // });
-    });
-};
+// const readStream = async (s: NodeJS.ReadableStream, n: number): Promise<Buffer> => {
+//     return new Promise<Buffer>((resolve, reject) => {
+//         // s.pause();
+//         const onReadable = () => {
+//             // debug("readStream READABLE");
+//             const b = s.read(n);
+//             s.removeListener("readable", onReadable);
+//             s.removeListener("error", reject);
+//             // s.resume();
+//             resolve(b as Buffer);
+//         };
+//         s.on("readable", onReadable);
+//         s.on("error", reject);
+//         // s.on("end", () => {
+//         //     debug("readStream END");
+//         // });
+//         // s.on("drain", () => {
+//         //     debug("readStream DRAIN");
+//         // });
+//         // s.on("finish", () => {
+//         //     debug("readStream FINISH");
+//         // });
+//     });
+// };
 
 export interface ICryptoInfo {
     length: number;
@@ -93,7 +94,18 @@ export async function transformStream(
     isPartialByteRangeRequest: boolean,
     partialByteBegin: number,
     partialByteEnd: number): Promise<IStreamAndLength> {
-
+    debug(
+        "transformStream",
+        lcp,
+        linkHref,
+        linkPropertiesEncrypted,
+        stream,
+        isPartialByteRangeRequest,
+        partialByteBegin,
+        partialByteEnd,
+    );
+    return Promise.reject("LCP not supported in a browser");
+/*
     const isCompressionNone = linkPropertiesEncrypted.Compression === "none";
     const isCompressionDeflate = linkPropertiesEncrypted.Compression === "deflate";
 
@@ -419,14 +431,16 @@ export async function transformStream(
         stream: destStream,
     };
     return Promise.resolve(sal);
+*/
 }
 
 export async function getDecryptedSizeStream(
     lcp: LCP,
     stream: IStreamAndLength): Promise<ICryptoInfo> {
-
-    return new Promise<ICryptoInfo>((resolve, reject) => {
-
+    debug("getDecryptedSizeStream", lcp, stream);
+    return new Promise<ICryptoInfo>((_resolve, reject) => {
+        reject("LCP not supported in a browser.");
+/*
         // debug("LCP getDecryptedSizeStream() stream.length: " + stream.length);
 
         // debug("LCP getDecryptedSizeStream() AES_BLOCK_SIZE: " + AES_BLOCK_SIZE);
@@ -543,6 +557,7 @@ export async function getDecryptedSizeStream(
         cypherRangeStream.on("error", () => {
             reject("DECRYPT err");
         });
+*/
     });
 }
 
