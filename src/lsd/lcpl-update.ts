@@ -5,7 +5,7 @@
 // that can be found in the LICENSE file exposed on Github (readium) in the project repository.
 // ==LICENSE-END==
 
-import { streamToBufferPromise } from "@utils/stream/BufferUtils";
+import { nodeStreamToBufferPromise } from "@utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as moment from "moment";
 import * as request from "request";
@@ -72,7 +72,7 @@ export async function lsdLcpUpdate(
 
                         let responseData: Buffer;
                         try {
-                            responseData = await streamToBufferPromise(response);
+                            responseData = await nodeStreamToBufferPromise(response);
                         } catch (err) {
                             reject(err);
                             return;
