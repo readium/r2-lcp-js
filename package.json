@@ -52,7 +52,7 @@
     "r2-utils-js": "github:edrlab/r2-utils-js-dist#develop",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.5",
-    "ta-json": "github:danielweck/ta-json#dist",
+    "ta-json": "github:evidentpoint/ta-json#dist",
     "tslib": "^1.9.2",
     "urijs": "^1.19.1"
   },
