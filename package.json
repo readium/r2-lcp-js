@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@types/debug": "^0.0.30",
-    "@types/node": "^9.6.5",
+    "@types/node": "^9.6.6",
     "@types/request": "^2.47.0",
     "@types/request-promise-native": "^1.0.14",
     "@types/urijs": "^1.15.37",
@@ -73,7 +73,7 @@
     "rimraf": "^2.6.2",
     "tslint": "^5.9.1",
     "tslint-language-service": "^0.9.9",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.3"
   },
   "files": [
     "LICENSE",
