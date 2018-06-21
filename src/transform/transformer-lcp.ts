@@ -9,7 +9,7 @@ import * as crypto from "crypto";
 import * as zlib from "zlib";
 
 import { Encrypted } from "@models/metadata-encrypted";
-import { LCP } from "@parser/epub/lcp";
+import { IDecryptedBuffer, LCP } from "@parser/epub/lcp";
 import { RangeStream } from "@utils/stream/RangeStream";
 import { IStreamAndLength } from "@utils/zip/zip";
 import * as debug_ from "debug";
@@ -94,9 +94,13 @@ export async function transformStream(
     partialByteBegin: number,
     partialByteEnd: number): Promise<IStreamAndLength> {
 
+    const isCompressionNone = linkPropertiesEncrypted.Compression === "none";
+    const isCompressionDeflate = linkPropertiesEncrypted.Compression === "deflate";
+
     let plainTextSize = -1;
 
     let nativelyDecryptedStream: NodeJS.ReadableStream | undefined;
+    let nativelyInflated = false;
     if (lcp.isNativeNodePlugin()) {
 
         debug("DECRYPT: " + linkHref);
@@ -115,21 +119,25 @@ export async function transformStream(
 
         // debug(fullEncryptedBuffer.slice(fullEncryptedBuffer.length - 32));
 
-        let nativelyDecryptedBuffer: Buffer;
+        let res: IDecryptedBuffer;
         try {
-            nativelyDecryptedBuffer = await lcp.decrypt(fullEncryptedBuffer);
+            res = await lcp.decrypt(fullEncryptedBuffer, linkHref, isCompressionDeflate);
         } catch (err) {
             debug(err);
             return Promise.reject("OUCH!");
         }
+
+        const nativelyDecryptedBuffer = res.buffer;
+        nativelyInflated = res.inflated;
 
         // debug(nativelyDecryptedBuffer.length);
 
         plainTextSize = nativelyDecryptedBuffer.length;
         linkPropertiesEncrypted.DecryptedLengthBeforeInflate = plainTextSize;
 
-        if (linkPropertiesEncrypted.OriginalLength &&
-            linkPropertiesEncrypted.Compression === "none" &&
+        if (!nativelyInflated && // necessary, even if isCompressionNone! (LCP inflation byte variance)
+            linkPropertiesEncrypted.OriginalLength &&
+            isCompressionNone &&
             linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
 
             debug(`############### ` +
@@ -174,7 +182,7 @@ export async function transformStream(
             // debug("LCP transformStream() ---- getDecryptedSizeStream(): " + plainTextSize);
 
             if (linkPropertiesEncrypted.OriginalLength &&
-                linkPropertiesEncrypted.Compression === "none" &&
+                isCompressionNone &&
                 linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
 
                 debug(`############### ` +
@@ -323,7 +331,7 @@ export async function transformStream(
         // destStream = counterStream2;
     }
 
-    if (linkPropertiesEncrypted.Compression === "deflate") {
+    if (!nativelyInflated && isCompressionDeflate) {
 
         // https://github.com/nodejs/node/blob/master/lib/zlib.js
         const inflateStream = zlib.createInflateRaw();
@@ -380,7 +388,7 @@ export async function transformStream(
         // destStream = counterStream;
     }
 
-    const l = linkPropertiesEncrypted.OriginalLength ?
+    const l = (!nativelyInflated && linkPropertiesEncrypted.OriginalLength) ?
         linkPropertiesEncrypted.OriginalLength : plainTextSize;
 
     if (isPartialByteRangeRequest) {

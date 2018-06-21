@@ -39,6 +39,11 @@ export function setLcpNativePluginPath(filepath: string): boolean {
     return exists;
 }
 
+export interface IDecryptedBuffer {
+    buffer: Buffer;
+    inflated: boolean;
+}
+
 @JsonObject()
 export class LCP {
     @JsonProperty("id")
@@ -125,7 +130,11 @@ export class LCP {
         }
     }
 
-    public async decrypt(encryptedContent: Buffer): Promise<Buffer> {
+    public async decrypt(encryptedContent: Buffer, linkHref: string, needsInflating: boolean):
+        Promise<IDecryptedBuffer> {
+
+        // debug("linkHref => needsInflating: " + linkHref + " => " + needsInflating);
+
         // this.init();
         if (!this.isNativeNodePlugin()) {
             return Promise.reject("direct decrypt buffer only for native plugin");
@@ -134,27 +143,36 @@ export class LCP {
             return Promise.reject("LCP context not initialized (call tryUserKeys())");
         }
 
-        return new Promise<Buffer>((resolve, reject) => {
+        return new Promise<IDecryptedBuffer>((resolve, reject) => {
 
             this._lcpNative.decrypt(
                 this._lcpContext,
                 encryptedContent,
-                (er: any, decryptedContent: any) => {
+                (er: any, decryptedContent: any, inflated: boolean) => {
                     if (er) {
                         debug("decrypt ERROR");
                         debug(er);
                         reject(er);
                         return;
                     }
-                    const padding = decryptedContent[decryptedContent.length - 1];
-                    // debug(padding);
-                    // const buff = Buffer.from(
-                    //     decryptedContent,
-                    //     0,
-                    //     decryptedContent.length - padding);
-                    const buff = decryptedContent.slice(0, decryptedContent.length - padding);
-                    resolve(buff);
+                    let buff = decryptedContent;
+                    if (!inflated) {
+                        const padding = decryptedContent[decryptedContent.length - 1];
+                        // debug(padding);
+                        // const buff = Buffer.from(
+                        //     decryptedContent,
+                        //     0,
+                        //     decryptedContent.length - padding);
+                        buff = decryptedContent.slice(0, decryptedContent.length - padding);
+                    }
+                    resolve({
+                        buffer: buff,
+                        inflated: inflated ? true : false, // force bool (from potentially-undefined function parameter)
+                    });
                 },
+                this.JsonSource,
+                linkHref,
+                needsInflating,
             );
         });
     }
