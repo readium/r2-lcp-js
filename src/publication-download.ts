@@ -12,7 +12,7 @@ import { injectFileInZip } from "@utils/zip/zipInjector";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
-import { JSON as TAJSON } from "ta-json";
+import { JSON as TAJSON } from "ta-json-x";
 
 import { LCP } from "./parser/epub/lcp";
 

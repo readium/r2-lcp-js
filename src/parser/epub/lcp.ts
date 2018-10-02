@@ -16,7 +16,7 @@ import {
     JsonElementType,
     JsonObject,
     JsonProperty,
-} from "ta-json";
+} from "ta-json-x";
 
 import { DUMMY_CRL } from "./lcp-certificate";
 import { Encryption } from "./lcp-encryption";
