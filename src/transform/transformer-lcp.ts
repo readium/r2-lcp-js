@@ -268,7 +268,9 @@ export async function transformStream(
 
         // https://github.com/nodejs/node/blob/master/lib/crypto.js#L259
         const decryptStream = crypto.createDecipheriv("aes-256-cbc",
-            lcp.ContentKey, // new Buffer(contentKey as string, "binary"),
+            // Note: assumes lcp.ContentKey has been set (can be undefined)
+            // (this is only for testing the pure JS implementation anyway)
+            lcp.ContentKey as Buffer, // new Buffer(contentKey as string, "binary"),
             ivBuffer);
         decryptStream.setAutoPadding(false);
         rawDecryptStream.pipe(decryptStream);
@@ -499,7 +501,9 @@ export async function getDecryptedSizeStream(
             // === shared-culture.mp4
 
             const decryptStream = crypto.createDecipheriv("aes-256-cbc",
-                lcp.ContentKey, // new Buffer(contentKey as string, "binary"),
+                // Note: assumes lcp.ContentKey has been set (can be undefined)
+                // (this is only for testing the pure JS implementation anyway)
+                lcp.ContentKey as Buffer, // new Buffer(contentKey as string, "binary"),
                 ivBuffer);
             decryptStream.setAutoPadding(false);
 
