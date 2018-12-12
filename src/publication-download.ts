@@ -8,7 +8,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { injectFileInZip } from "@utils/zip/zipInjector";
+import { injectFileInZip } from "@r2-utils-js/_utils/zip/zipInjector";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";

@@ -10,13 +10,13 @@ import * as zlib from "zlib";
 
 import { Encrypted } from "@models/metadata-encrypted";
 import { IDecryptedBuffer, LCP } from "@parser/epub/lcp";
-import { RangeStream } from "@utils/stream/RangeStream";
-import { IStreamAndLength } from "@utils/zip/zip";
+import { RangeStream } from "@r2-utils-js/_utils/stream/RangeStream";
+import { IStreamAndLength } from "@r2-utils-js/_utils/zip/zip";
 import * as debug_ from "debug";
 
 // import * as forge from "node-forge";
-import { bufferToStream, streamToBufferPromise } from "@utils/stream/BufferUtils";
-// import { CounterPassThroughStream } from "@utils/stream/CounterPassThroughStream";
+import { bufferToStream, streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
+// import { CounterPassThroughStream } from "@r2-utils-js/_utils/stream/CounterPassThroughStream";
 // import { Transform } from "stream";
 
 const debug = debug_("r2:lcp#transform/transformer-lcp");
