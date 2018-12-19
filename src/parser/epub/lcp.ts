@@ -42,75 +42,6 @@ export function setLcpNativePluginPath(filepath: string): boolean {
     return exists;
 }
 
-async function getCRLPem(): Promise<string> {
-
-    return new Promise<any>(async (resolve, reject) => {
-
-        const failure = (err: any) => {
-            // reject(err);
-            debug(err);
-            resolve(DUMMY_CRL);
-        };
-
-        const success = async (response: request.RequestResponse) => {
-
-            Object.keys(response.headers).forEach((header: string) => {
-                debug(header + " => " + response.headers[header]);
-            });
-
-            if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                failure("HTTP CODE " + response.statusCode);
-                return;
-            }
-
-            let responseData: Buffer;
-            try {
-                responseData = await streamToBufferPromise(response);
-            } catch (err) {
-                reject(err);
-                return;
-            }
-
-            const lcplStr = "-----BEGIN X509 CRL-----\n" + responseData.toString("base64") + "\n-----END X509 CRL-----";
-            debug(lcplStr);
-            resolve(lcplStr);
-        };
-
-        const headers = {
-            // "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-        };
-
-        // No response streaming! :(
-        // https://github.com/request/request-promise/issues/90
-        const needsStreamingResponse = true;
-        if (needsStreamingResponse) {
-            request.get({
-                headers,
-                method: "GET",
-                uri: CRL_URL,
-            })
-                .on("response", success)
-                .on("error", failure);
-        } else {
-            let response: requestPromise.FullResponse;
-            try {
-                // tslint:disable-next-line:await-promise no-floating-promises
-                response = await requestPromise({
-                    headers,
-                    method: "GET",
-                    resolveWithFullResponse: true,
-                    uri: CRL_URL,
-                });
-            } catch (err) {
-                failure(err);
-                return;
-            }
-
-            await success(response);
-        }
-    });
-}
-
 export interface IDecryptedBuffer {
     buffer: Buffer;
     inflated: boolean;
@@ -268,7 +199,7 @@ export class LCP {
 
         if (this._usesNativeNodePlugin) {
 
-            const crlPem = await getCRLPem();
+            const crlPem = await this.getCRLPem();
 
             return new Promise((resolve, reject) => {
 
@@ -349,6 +280,119 @@ export class LCP {
             }
         }
         return Promise.reject(1); // "Pass fail."
+    }
+
+    private async getCRLPem(): Promise<string> {
+
+        return new Promise<any>(async (resolve, reject) => {
+
+            const crlURL = CRL_URL;
+
+            // We don't have to use the hard-coded URL,
+            // we can discover the CRL distribution points from the certificate:
+            // // import { URL } from "url";
+            // // import * as forge from "node-forge";
+            // if (this.Encryption && this.Encryption.Profile) {
+            //     const pem: string | undefined =
+            //         (this.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ?
+            //             LCPCertificateProdProfile :
+            //         (this.Encryption.Profile === "http://readium.org/lcp/basic-profile") ?
+            //             LCPCertificateBasicProfile :
+            //         undefined;
+            //     if (pem) {
+            //         try {
+            //             const cert = forge.pki.certificateFromPem(pem);
+            //             const extDistributionPoints = cert.extensions.find((ext) => {
+            //                 if (ext.name === "cRLDistributionPoints") {
+            //                     return true;
+            //                 }
+            //                 return false;
+            //             });
+            //             debug(extDistributionPoints);
+            //             if (extDistributionPoints && extDistributionPoints.value) {
+            //                 const iHTTP = extDistributionPoints.value.indexOf("http");
+            //                 const urlStr = extDistributionPoints.value.substr(iHTTP);
+            //                 const url = new URL(urlStr);
+            //                 crlURL = url.toString();
+            //                 debug(crlURL);
+            //             }
+            //         } catch (err) {
+            //             debug(err);
+            //         }
+            //     }
+            // }
+            const failure = (err: any) => {
+                // reject(err);
+                debug(err);
+                resolve(DUMMY_CRL);
+            };
+
+            const success = async (response: request.RequestResponse) => {
+
+                Object.keys(response.headers).forEach((header: string) => {
+                    debug(header + " => " + response.headers[header]);
+                });
+
+                if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
+                    failure("HTTP CODE " + response.statusCode);
+
+                    let d: Buffer;
+                    try {
+                        d = await streamToBufferPromise(response);
+                    } catch (err) {
+                        return;
+                    }
+                    const s = d.toString("utf8");
+                    debug(s);
+                    return;
+                }
+                let responseData: Buffer;
+                try {
+                    responseData = await streamToBufferPromise(response);
+                } catch (err) {
+                    reject(err);
+                    return;
+                }
+
+                const lcplStr = "-----BEGIN X509 CRL-----\n" +
+                    responseData.toString("base64") + "\n-----END X509 CRL-----";
+                debug(lcplStr);
+                resolve(lcplStr);
+            };
+
+            const headers = {
+                // "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
+            };
+
+            // No response streaming! :(
+            // https://github.com/request/request-promise/issues/90
+            const needsStreamingResponse = true;
+            if (needsStreamingResponse) {
+                request.get({
+                    headers,
+                    method: "GET",
+                    uri: crlURL,
+                })
+                    .on("response", success)
+                    .on("error", failure);
+            } else {
+                let response: requestPromise.FullResponse;
+                try {
+                    // tslint:disable-next-line:await-promise no-floating-promises
+                    response = await requestPromise({
+                        headers,
+                        method: "GET",
+                        resolveWithFullResponse: true,
+                        uri: crlURL,
+                    });
+                } catch (err) {
+                    failure(err);
+                    return;
+                }
+
+                await success(response);
+            }
+        });
     }
 
     private tryUserKey(lcpUserKey: string): boolean {

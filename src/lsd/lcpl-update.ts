@@ -67,6 +67,15 @@ export async function lsdLcpUpdate(
                             //     failure("HTTP CODE " + response.statusCode);
                             // }
                             failure("HTTP CODE " + response.statusCode);
+
+                            let d: Buffer;
+                            try {
+                                d = await streamToBufferPromise(response);
+                            } catch (err) {
+                                return;
+                            }
+                            const s = d.toString("utf8");
+                            debug(s);
                             return;
                         }
 

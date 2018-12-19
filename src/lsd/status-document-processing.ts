@@ -55,6 +55,15 @@ export async function launchStatusDocumentProcessing(
 
         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
             failure("HTTP CODE " + response.statusCode);
+
+            let d: Buffer;
+            try {
+                d = await streamToBufferPromise(response);
+            } catch (err) {
+                return;
+            }
+            const s = d.toString("utf8");
+            debug(s);
             return;
         }
 

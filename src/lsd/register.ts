@@ -64,7 +64,7 @@ export async function lsdRegister(
         if (!deviceIDForStatusDoc) {
             doRegister = true;
         } else if (deviceIDForStatusDoc !== deviceID) {
-            debug("LSD registered device ID is different?");
+            debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
             // this should really never happen ... but let's ensure anyway.
             doRegister = true;
         }
@@ -97,6 +97,15 @@ export async function lsdRegister(
 
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 failure("HTTP CODE " + response.statusCode);
+
+                let d: Buffer;
+                try {
+                    d = await streamToBufferPromise(response);
+                } catch (err) {
+                    return;
+                }
+                const s = d.toString("utf8");
+                debug(s);
                 return;
             }
 
@@ -111,6 +120,7 @@ export async function lsdRegister(
             debug(responseStr);
             const responseJson = global.JSON.parse(responseStr);
             debug(responseJson);
+            debug(responseJson.status);
 
             if (responseJson.status === "active") {
                 try {
