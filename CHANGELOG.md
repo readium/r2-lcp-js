@@ -1,10 +1,29 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.2...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.3...develop
 
 Changes:
 * TODO
+
+# 1.0.3
+
+> Build environment: NodeJS `8.14.0`, NPM `6.5.0`
+
+Changes:
+* NPM updates
+* Added support for CRL Certificate Revocation List (not via certificate-embedded Distribution Points, instead using hard-coded URL for LCP ecosystem)
+* Added HTTP error details (console logging)
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.3/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.3/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.3
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.2...v1.0.3
 
 # 1.0.2
 
