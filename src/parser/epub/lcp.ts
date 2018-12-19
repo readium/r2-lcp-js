@@ -5,12 +5,15 @@
 // that can be found in the LICENSE file exposed on Github (readium) in the project repository.
 // ==LICENSE-END==
 
-import * as bind from "bindings";
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 
+import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
+import * as bind from "bindings";
 import * as debug_ from "debug";
+import * as request from "request";
+import * as requestPromise from "request-promise-native";
 // https://github.com/edcarroll/ta-json
 import {
     JsonElementType,
@@ -18,7 +21,7 @@ import {
     JsonProperty,
 } from "ta-json-x";
 
-import { DUMMY_CRL } from "./lcp-certificate";
+import { CRL_URL, DUMMY_CRL } from "./lcp-certificate";
 import { Encryption } from "./lcp-encryption";
 import { Link } from "./lcp-link";
 import { Rights } from "./lcp-rights";
@@ -37,6 +40,75 @@ export function setLcpNativePluginPath(filepath: string): boolean {
     const exists = fs.existsSync(LCP_NATIVE_PLUGIN_PATH);
     debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
     return exists;
+}
+
+async function getCRLPem(): Promise<string> {
+
+    return new Promise<any>(async (resolve, reject) => {
+
+        const failure = (err: any) => {
+            // reject(err);
+            debug(err);
+            resolve(DUMMY_CRL);
+        };
+
+        const success = async (response: request.RequestResponse) => {
+
+            Object.keys(response.headers).forEach((header: string) => {
+                debug(header + " => " + response.headers[header]);
+            });
+
+            if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
+                failure("HTTP CODE " + response.statusCode);
+                return;
+            }
+
+            let responseData: Buffer;
+            try {
+                responseData = await streamToBufferPromise(response);
+            } catch (err) {
+                reject(err);
+                return;
+            }
+
+            const lcplStr = "-----BEGIN X509 CRL-----\n" + responseData.toString("base64") + "\n-----END X509 CRL-----";
+            debug(lcplStr);
+            resolve(lcplStr);
+        };
+
+        const headers = {
+            // "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
+        };
+
+        // No response streaming! :(
+        // https://github.com/request/request-promise/issues/90
+        const needsStreamingResponse = true;
+        if (needsStreamingResponse) {
+            request.get({
+                headers,
+                method: "GET",
+                uri: CRL_URL,
+            })
+                .on("response", success)
+                .on("error", failure);
+        } else {
+            let response: requestPromise.FullResponse;
+            try {
+                // tslint:disable-next-line:await-promise no-floating-promises
+                response = await requestPromise({
+                    headers,
+                    method: "GET",
+                    resolveWithFullResponse: true,
+                    uri: CRL_URL,
+                });
+            } catch (err) {
+                failure(err);
+                return;
+            }
+
+            await success(response);
+        }
+    });
 }
 
 export interface IDecryptedBuffer {
@@ -196,6 +268,8 @@ export class LCP {
 
         if (this._usesNativeNodePlugin) {
 
+            const crlPem = await getCRLPem();
+
             return new Promise((resolve, reject) => {
 
                 this._lcpNative.findOneValidPassphrase(
@@ -213,7 +287,7 @@ export class LCP {
                         this._lcpNative.createContext(
                             this.JsonSource,
                             validHashedPassphrase,
-                            DUMMY_CRL,
+                            crlPem,
                             (erro: any, context: any) => {
                                 if (erro) {
                                     debug("createContext ERROR");

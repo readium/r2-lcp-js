@@ -37,6 +37,8 @@ ivPak5w5wtvreFvEHCntnhIocuqc9AOFoDdQo9idB25YUzwot0NNL6pShMNXNE6F
 Imaa1w7gBDc+DVRYAoJzHF+awCOgqEDEXu67GHgcrXpQ9Ts7Eq+wjNy9OQ==
 -----END CERTIFICATE-----`;
 
+export const CRL_URL = "http://crl.edrlab.telesec.de/rl/EDRLab_CA.crl";
+
 export const DUMMY_CRL = `-----BEGIN X509 CRL-----
 MIICrTCBljANBgkqhkiG9w0BAQQFADBnMQswCQYDVQQGEwJGUjEOMAwGA1UEBxMF
 UGFyaXMxDzANBgNVBAoTBkVEUkxhYjESMBAGA1UECxMJTENQIFRlc3RzMSMwIQYD
