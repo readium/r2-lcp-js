@@ -1,10 +1,29 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.3...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.4...develop
 
 Changes:
 * TODO
+
+# 1.0.4
+
+> Build environment: NodeJS `8.14.1`, NPM `6.4.1`
+
+Changes:
+* Updated documentation (minor)
+* Fixed a NodeJS v8+ regression bug: readable-stream end event was not raised (which is why LCP decryption with basic-test profile was broken at Heroku and Now.sh streamer deployments)
+* NPM 6.5.* has regression bugs for global package installs, so revert back to NPM 6.4.1 (which is officially shipped with the NodeJS installer).
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.4/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.4/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.4
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.3...v1.0.4
 
 # 1.0.3
 
