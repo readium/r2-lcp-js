@@ -427,7 +427,7 @@ export async function getDecryptedSizeStream(
     lcp: LCP,
     stream: IStreamAndLength): Promise<ICryptoInfo> {
 
-    return new Promise<ICryptoInfo>((resolve, reject) => {
+    return new Promise<ICryptoInfo>(async (resolve, reject) => {
 
         // debug("LCP getDecryptedSizeStream() stream.length: " + stream.length);
 
@@ -475,30 +475,7 @@ export async function getDecryptedSizeStream(
         // resolve(this.getDecryptedSizeBuffer_(stream.length, buff));
 
         const decrypteds: Buffer[] = [];
-
-        cypherRangeStream.on("readable", () => {
-            // debug("readable");
-
-            const ivBuffer = cypherRangeStream.read(AES_BLOCK_SIZE);
-            if (!ivBuffer) {
-                // debug("readable null (end)");
-                return;
-            }
-
-            // debug(ivBuffer.toString("hex"));
-            // e10cb2a27aa7b9633f104ccca113d499
-            // === asharedculture_soundtrack.mp3
-            //
-            // 5d290cb97ea83ccc01a67d30a9c7eeaa
-            // === shared-culture.mp4
-
-            const encrypted = cypherRangeStream.read(AES_BLOCK_SIZE);
-            // debug(encrypted.toString("hex"));
-            // 14b46cb1e279d51c12ce13989b3d6cf3
-            // === asharedculture_soundtrack.mp3
-            //
-            // b2924b9b0cd64ab7cd349beef8e4b068
-            // === shared-culture.mp4
+        const handle = (ivBuffer: Buffer, encrypted: Buffer) => {
 
             const decryptStream = crypto.createDecipheriv("aes-256-cbc",
                 // Note: assumes lcp.ContentKey has been set (can be undefined)
@@ -508,12 +485,6 @@ export async function getDecryptedSizeStream(
             decryptStream.setAutoPadding(false);
 
             const buff1 = decryptStream.update(encrypted);
-            // debug(buff1.toString("hex"));
-            // ecf8848cb3c0c97b9e159ec2daa96810
-            // === asharedculture_soundtrack.mp3
-            //
-            // 004c61766635332e31372e308b6f7004
-            // === shared-culture.mp4
             if (buff1) {
                 decrypteds.push(buff1);
             }
@@ -523,14 +494,25 @@ export async function getDecryptedSizeStream(
             if (buff2) {
                 decrypteds.push(buff2);
             }
-        });
 
-        cypherRangeStream.on("end", () => {
-            // debug("end");
+            finish();
+        };
+
+        let finished = false;
+        const finish = () => {
+            if (finished) {
+                return;
+            }
+            finished = true;
+            // cleanup();
 
             const decrypted = Buffer.concat(decrypteds);
             // debug(decrypted.toString("hex"));
             // debug(decrypted.length);
+            if (decrypted.length !== AES_BLOCK_SIZE) {
+                reject("decrypted.length !== AES_BLOCK_SIZE");
+                return;
+            }
 
             const nPaddingBytes = decrypted[AES_BLOCK_SIZE - 1]; // decrypted.length = 1
             // debug(nPaddingBytes);
@@ -542,37 +524,68 @@ export async function getDecryptedSizeStream(
                 padding: nPaddingBytes,
             };
             resolve(res);
-        });
+        };
 
-        cypherRangeStream.on("error", () => {
-            reject("DECRYPT err");
-        });
+        try {
+            const buf = await readStream(cypherRangeStream, TWO_AES_BLOCK_SIZE);
+            if (!buf) {
+                reject("!buf (end?)");
+                return;
+            }
+            if (buf.length !== TWO_AES_BLOCK_SIZE) {
+                reject("buf.length !== TWO_AES_BLOCK_SIZE");
+                return;
+            }
+            handle(buf.slice(0, AES_BLOCK_SIZE), buf.slice(AES_BLOCK_SIZE));
+        } catch (err) {
+            debug(err);
+            reject(err);
+            return;
+        }
+
+        // const cleanup = () => {
+        //     cypherRangeStream.removeListener("readable", handleReadable);
+        //     cypherRangeStream.removeListener("error", handleError);
+        //     cypherRangeStream.removeListener("end", handleEnd);
+        // };
+
+        // const handleReadable = () => {
+        //     // debug("readable");
+
+        //     const ivBuffer = cypherRangeStream.read(AES_BLOCK_SIZE);
+        //     if (!ivBuffer) {
+        //         reject("!ivBuffer (end?)");
+        //         return;
+        //     }
+        //     if (ivBuffer.length !== AES_BLOCK_SIZE) {
+        //         reject("ivBuffer.length !== AES_BLOCK_SIZE");
+        //         return;
+        //     }
+
+        //     const encrypted = cypherRangeStream.read(AES_BLOCK_SIZE);
+        //     if (!encrypted) {
+        //         reject("!encrypted (end?)");
+        //         return;
+        //     }
+        //     if (encrypted.length !== AES_BLOCK_SIZE) {
+        //         reject("encrypted.length !== AES_BLOCK_SIZE");
+        //         return;
+        //     }
+
+        //     handle(ivBuffer, encrypted);
+        // };
+        // cypherRangeStream.on("readable", handleReadable);
+
+        // // // With NodeJS v8, this event is raised. Not with NodeJS 10+
+        // // const handleEnd = () => {
+        // //     finish();
+        // // };
+        // // cypherRangeStream.on("end", handleEnd);
+
+        // const handleError = () => {
+        //     cleanup();
+        //     reject();
+        // };
+        // cypherRangeStream.on("error", handleError);
     });
 }
-
-// cc-shared-culture/EPUB/audio/asharedculture_soundtrack.mp3
-// 3265152 bytes
-// 3 MB
-// 204072 * 16 BLOCKS (inc IV)
-// 3265152 MOD 16 = 0
-// IV 16
-// PAD 16, full extra block (random)
-// + 32 = 3265184 total cypher-text
-
-// cc-shared-culture/EPUB/video/shared-culture.mp4
-// 21784780 bytes
-// 21 MB
-// 1361548.75 * 16 BLOCKS (inc IV)
-// 21784780 MOD 16 = 12 (0.75 * 16)
-// IV 16
-// PAD 4 (12 cypher-text bytes in last block)
-// + 20 = 21784800 total cypher-text
-
-// cc-shared-culture/EPUB/video/shared-culture.webm
-// 8330669 bytes
-// 8 MB
-// 520666.8125 * 16 BLOCKS (inc IV)
-// 8330669 MOD 16 = 13 (0.8125 * 16)
-// IV 16
-// PAD 3 (13 cypher-text bytes in last block)
-// + 19 = 8330688 total cypher-text
