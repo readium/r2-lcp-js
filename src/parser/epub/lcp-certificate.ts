@@ -5,7 +5,12 @@
 // that can be found in the LICENSE file exposed on Github (readium) in the project repository.
 // ==LICENSE-END==
 
+// see https://github.com/readium/r2-testapp-swift/issues/220
+
+// Certificate Revocation List (CRL)
 export const CRL_URL = "http://crl.edrlab.telesec.de/rl/EDRLab_CA.crl";
+
+// Authority Revocation List (ARL)
 export const CRL_URL_ALT = "http://crl.edrlab.telesec.de/rl/Readium_LCP_Root_CA.crl";
 
 export const DUMMY_CRL = `-----BEGIN X509 CRL-----

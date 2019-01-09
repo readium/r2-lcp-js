@@ -288,38 +288,107 @@ export class LCP {
 
             const crlURL = CRL_URL;
 
-            // We don't have to use the hard-coded URL,
-            // we can discover the CRL distribution points from the certificate:
-            // // import { URL } from "url";
-            // // import * as forge from "node-forge";
-            // if (this.Encryption && this.Encryption.Profile) {
-            //     const pem: string | undefined =
-            //         (this.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ?
-            //             LCPCertificateProdProfile :
-            //         (this.Encryption.Profile === "http://readium.org/lcp/basic-profile") ?
-            //             LCPCertificateBasicProfile :
-            //         undefined;
-            //     if (pem) {
-            //         try {
-            //             const cert = forge.pki.certificateFromPem(pem);
-            //             const extDistributionPoints = cert.extensions.find((ext) => {
-            //                 if (ext.name === "cRLDistributionPoints") {
-            //                     return true;
-            //                 }
-            //                 return false;
-            //             });
-            //             debug(extDistributionPoints);
-            //             if (extDistributionPoints && extDistributionPoints.value) {
-            //                 const iHTTP = extDistributionPoints.value.indexOf("http");
-            //                 const urlStr = extDistributionPoints.value.substr(iHTTP);
-            //                 const url = new URL(urlStr);
-            //                 crlURL = url.toString();
-            //                 debug(crlURL);
-            //             }
-            //         } catch (err) {
-            //             debug(err);
-            //         }
-            //     }
+            // Instead of using the hard-coded URLs,
+            // instead we can discover the CRL distribution points from the certificates:
+            // if (this.Encryption && this.Encryption.Profile && this.Signature && this.Signature.Certificate) {
+                // This gives CRL_URL_ALT (ARL, not CRL)
+                // const certPEM: string | undefined =
+                //     (this.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ?
+                //         LCPCertificateProdProfile :
+                //     (this.Encryption.Profile === "http://readium.org/lcp/basic-profile") ?
+                //         LCPCertificateBasicProfile :
+                //     undefined;
+
+                // const certBase64 = this.Signature.Certificate;
+                // debug(certBase64);
+                // const certPEM = "-----BEGIN CERTIFICATE-----\n" +
+                //     (certBase64.match(/.{0,64}/g) as RegExpMatchArray).join("\n") +
+                //     "-----END CERTIFICATE-----";
+                // debug(certPEM);
+
+                // --------------------------------
+                // WITH sshpk (works, although the recursive extraction from the CRL extension is a bit strange)
+                // import { parseCertificate } from "sshpk";
+                // const certDER = new Buffer(certBase64, "base64");
+                // // debug(certFromBase64.toString("hex"));
+                // const cert = parseCertificate(certDER, "x509");
+                // // const cert = parseCertificate(certPEM, "pem");
+                // debug(cert);
+                // const exts = (cert as any).getExtensions(); // incorrect TypeScript Typings :(
+                // debug(exts);
+                // // CRL Distribution Points === 2.5.29.31 === id_ce_CRLDistributionPoints
+                // const ext = (cert as any).getExtension("2.5.29.31"); // incorrect TypeScript Typings :(
+                // debug(ext);
+                // const buff = forge.util.createBuffer(ext.data, "binary");
+                // // const buff = Buffer.from(ext.data).toString("binary");
+                // const certAsn1 = forge.asn1.fromDer(buff);
+                // // debug(certAsn1);
+                // console.log(util.inspect(certAsn1,
+                // tslint:disable-next-line:max-line-length
+                //     { breakLength: 1000, maxArrayLength: 1000, showHidden: false, depth: 1000, colors: true, customInspect: false }));
+                // function extractCrlUrl(val: any): string | undefined {
+                //     if (!val) {
+                //         return undefined;
+                //     }
+                //     if (typeof val === "string") {
+                //         return val;
+                //     }
+                //     if (val instanceof Array) {
+                //         for (const v of val) {
+                //             const ex = extractCrlUrl(v);
+                //             if (ex) {
+                //                 return ex;
+                //             }
+                //         }
+                //     }
+                //     if (typeof val === "object") {
+                //         return extractCrlUrl(val.value);
+                //     }
+                //     return undefined;
+                // }
+                // const crlURL_ = extractCrlUrl(certAsn1.value);
+                // debug(crlURL_);
+
+                // --------------------------------
+                // WITH forge (problem: ECDSA not supported, fails at forge.pki.certificateFromAsn1())
+                // import * as forge from "node-forge";
+                // const certDER = forge.util.decode64(certBase64);
+                // // debug(forge.util.bytesToHex(certDER));
+                // const certAsn1 = forge.asn1.fromDer(certDER);
+                // debug(certAsn1);
+                // if (certAsn1) {
+                //     try {
+                //         // const cert = forge.pki.certificateFromPem(certPEM);
+                //         const cert = forge.pki.certificateFromAsn1(certAsn1); // FAILS WITH ECDSA
+                //         // const certPEM = forge.pki.certificateToPem(cert);
+                //         // debug(certPEM);
+                //         const extDistributionPoints = cert.extensions.find((ext) => {
+                //             if (ext.name === "cRLDistributionPoints") {
+                //                 return true;
+                //             }
+                //             return false;
+                //         });
+                //         debug(extDistributionPoints);
+                //         if (extDistributionPoints && extDistributionPoints.value) {
+                //             const iHTTP = extDistributionPoints.value.indexOf("http");
+                //             const urlStr = extDistributionPoints.value.substr(iHTTP);
+                //             const url = new URL(urlStr);
+                //             const crlURL_ = url.toString();
+                //             debug("crlURL_");
+                //             debug(crlURL_);
+                //         }
+                //     } catch (err) {
+                //         debug(err);
+                //     }
+                // }
+
+                // --------------------------------
+                // WITH pkijs (does pass runtime, hard to integrate in TypeScript with NodeJS imports)
+                // import { fromBER } from "asn1js";
+                // import Certificate from "pkijs/src/Certificate";
+                // const asn1 = fromBER(certDER.buffer);
+                // const certificate = new Certificate({ schema: asn1.result });
+                // debug(certificate);
             // }
             const failure = (err: any) => {
                 // reject(err);
