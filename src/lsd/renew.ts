@@ -86,25 +86,23 @@ export async function lsdRenew(
 
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 failure("HTTP CODE " + response.statusCode);
-
-                let d: Buffer;
-                try {
-                    d = await streamToBufferPromise(response);
-                } catch (err) {
-                    return;
-                }
-                const s = d.toString("utf8");
                 if (IS_DEV) {
-                    debug(s);
-                }
-                try {
-                    const j = global.JSON.parse(s);
-                    if (IS_DEV) {
-                        debug(j);
+                    let failBuff: Buffer;
+                    try {
+                        failBuff = await streamToBufferPromise(response);
+                    } catch (err) {
+                        debug(err);
+                        return;
                     }
-                } catch (jsonErr) {
-                    debug(jsonErr);
-                    // ignore
+                    const failStr = failBuff.toString("utf8");
+                    debug(failStr);
+                    try {
+                        const failJson = global.JSON.parse(failStr);
+                        debug(failJson);
+                    } catch (jsonErr) {
+                        debug(jsonErr);
+                        // ignore
+                    }
                 }
                 return;
             }

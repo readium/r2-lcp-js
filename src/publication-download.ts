@@ -19,6 +19,8 @@ import { LCP } from "./parser/epub/lcp";
 
 const debug = debug_("r2:lcp#publication-download");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFileName: string): Promise<string[]> {
 
     return new Promise<string[]>(async (resolve, reject) => {
@@ -42,22 +44,32 @@ export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFi
                 };
 
                 const success = async (response: request.RequestResponse) => {
-
-                    Object.keys(response.headers).forEach((header: string) => {
-                        debug(header + " => " + response.headers[header]);
-                    });
+                    if (IS_DEV) {
+                        Object.keys(response.headers).forEach((header: string) => {
+                            debug(header + " => " + response.headers[header]);
+                        });
+                    }
 
                     if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                         failure("HTTP CODE " + response.statusCode);
-
-                        let d: Buffer;
-                        try {
-                            d = await streamToBufferPromise(response);
-                        } catch (err) {
-                            return;
+                        if (IS_DEV) {
+                            let failBuff: Buffer;
+                            try {
+                                failBuff = await streamToBufferPromise(response);
+                            } catch (err) {
+                                debug(err);
+                                return;
+                            }
+                            const failStr = failBuff.toString("utf8");
+                            debug(failStr);
+                            try {
+                                const failJson = global.JSON.parse(failStr);
+                                debug(failJson);
+                            } catch (jsonErr) {
+                                debug(jsonErr);
+                                // ignore
+                            }
                         }
-                        const s = d.toString("utf8");
-                        debug(s);
                         return;
                     }
 

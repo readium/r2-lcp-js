@@ -32,13 +32,19 @@ const AES_BLOCK_SIZE = 16;
 
 const debug = debug_("r2:lcp#parser/epub/lcp");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 let LCP_NATIVE_PLUGIN_PATH = path.join(process.cwd(), "LCP", "lcp.node");
 export function setLcpNativePluginPath(filepath: string): boolean {
     LCP_NATIVE_PLUGIN_PATH = filepath;
-    debug(LCP_NATIVE_PLUGIN_PATH);
+    if (IS_DEV) {
+        debug(LCP_NATIVE_PLUGIN_PATH);
+    }
 
     const exists = fs.existsSync(LCP_NATIVE_PLUGIN_PATH);
-    debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    if (IS_DEV) {
+        debug("LCP NATIVE PLUGIN: " + (exists ? "OKAY" : "MISSING"));
+    }
     return exists;
 }
 
@@ -112,11 +118,15 @@ export class LCP {
         this._lcpContext = undefined;
 
         if (fs.existsSync(LCP_NATIVE_PLUGIN_PATH)) {
-            debug("LCP _usesNativeNodePlugin");
+            if (IS_DEV) {
+                debug("LCP _usesNativeNodePlugin");
+            }
             const filePath = path.dirname(LCP_NATIVE_PLUGIN_PATH);
             const fileName = path.basename(LCP_NATIVE_PLUGIN_PATH);
-            debug(filePath);
-            debug(fileName);
+            if (IS_DEV) {
+                debug(filePath);
+                debug(fileName);
+            }
             this._usesNativeNodePlugin = true;
             this._lcpNative = bind({
                 bindings: fileName,
@@ -127,7 +137,9 @@ export class LCP {
                 ]],
             });
         } else {
-            debug("LCP JS impl");
+            if (IS_DEV) {
+                debug("LCP JS impl");
+            }
             this._usesNativeNodePlugin = false;
             this._lcpNative = undefined;
         }
@@ -398,23 +410,35 @@ export class LCP {
 
             const success = async (response: request.RequestResponse) => {
 
-                Object.keys(response.headers).forEach((header: string) => {
-                    debug(header + " => " + response.headers[header]);
-                });
+                if (IS_DEV) {
+                    Object.keys(response.headers).forEach((header: string) => {
+                        debug(header + " => " + response.headers[header]);
+                    });
+                }
 
                 if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                     failure("HTTP CODE " + response.statusCode);
-
-                    let d: Buffer;
-                    try {
-                        d = await streamToBufferPromise(response);
-                    } catch (err) {
-                        return;
+                    if (IS_DEV) {
+                        let failBuff: Buffer;
+                        try {
+                            failBuff = await streamToBufferPromise(response);
+                        } catch (err) {
+                            debug(err);
+                            return;
+                        }
+                        const failStr = failBuff.toString("utf8");
+                        debug(failStr);
+                        try {
+                            const failJson = global.JSON.parse(failStr);
+                            debug(failJson);
+                        } catch (jsonErr) {
+                            debug(jsonErr);
+                            // ignore
+                        }
                     }
-                    const s = d.toString("utf8");
-                    debug(s);
                     return;
                 }
+
                 let responseData: Buffer;
                 try {
                     responseData = await streamToBufferPromise(response);
@@ -425,7 +449,9 @@ export class LCP {
 
                 const lcplStr = "-----BEGIN X509 CRL-----\n" +
                     responseData.toString("base64") + "\n-----END X509 CRL-----";
-                debug(lcplStr);
+                if (IS_DEV) {
+                    debug(lcplStr);
+                }
                 resolve(lcplStr);
             };
 
