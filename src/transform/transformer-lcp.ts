@@ -21,6 +21,8 @@ import { bufferToStream, streamToBufferPromise } from "@r2-utils-js/_utils/strea
 
 const debug = debug_("r2:lcp#transform/transformer-lcp");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 const AES_BLOCK_SIZE = 16;
 
 // let streamCounter = 0;
@@ -75,10 +77,12 @@ export function supports(
         && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
         ;
     if (!check) {
-        debug("Incorrect resource LCP fields.");
-        debug(linkPropertiesEncrypted.Scheme);
-        debug(linkPropertiesEncrypted.Profile);
-        debug(linkPropertiesEncrypted.Algorithm);
+        // if (IS_DEV) {
+        //     debug("Incorrect resource LCP fields (obfuscated fonts?).");
+        //     debug(linkPropertiesEncrypted.Scheme);
+        //     debug(linkPropertiesEncrypted.Profile);
+        //     debug(linkPropertiesEncrypted.Algorithm);
+        // }
         return false;
     }
 
@@ -103,7 +107,9 @@ export async function transformStream(
     let nativelyInflated = false;
     if (lcp.isNativeNodePlugin()) {
 
-        debug("DECRYPT: " + linkHref);
+        if (IS_DEV) {
+            debug("LCP DECRYPT NATIVE: " + linkHref);
+        }
 
         let fullEncryptedBuffer: Buffer;
         try {

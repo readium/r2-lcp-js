@@ -17,6 +17,8 @@ import { lsdRegister } from "./register";
 
 const debug = debug_("r2:lcp#lsd/status-document-processing");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 export async function launchStatusDocumentProcessing(
     lcp: LCP,
     deviceIDManager: IDeviceIDManager,
@@ -38,7 +40,9 @@ export async function launchStatusDocumentProcessing(
         return;
     }
 
-    debug(linkStatus);
+    if (IS_DEV) {
+        debug(linkStatus);
+    }
 
     const failure = (err: any) => {
         debug(err);
@@ -49,9 +53,11 @@ export async function launchStatusDocumentProcessing(
 
     const success = async (response: request.RequestResponse) => {
 
-        Object.keys(response.headers).forEach((header: string) => {
-            debug(header + " => " + response.headers[header]);
-        });
+        if (IS_DEV) {
+            Object.keys(response.headers).forEach((header: string) => {
+                debug(header + " => " + response.headers[header]);
+            });
+        }
 
         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
             failure("HTTP CODE " + response.statusCode);
@@ -63,7 +69,18 @@ export async function launchStatusDocumentProcessing(
                 return;
             }
             const s = d.toString("utf8");
-            debug(s);
+            if (IS_DEV) {
+                debug(s);
+            }
+            try {
+                const j = global.JSON.parse(s);
+                if (IS_DEV) {
+                    debug(j);
+                }
+            } catch (jsonErr) {
+                debug(jsonErr);
+                // ignore
+            }
             return;
         }
 
@@ -84,12 +101,16 @@ export async function launchStatusDocumentProcessing(
         // application/vnd.readium.lcp.license.v1.0+json (NEW)
         // application/vnd.readium.license.status.v1.0+json (LSD)
         const mime = "application/vnd.readium.license.status.v1.0+json";
-        if (response.headers["content-type"] === mime ||
-            response.headers["content-type"] === "application/json") {
-            debug(responseStr);
+        if (IS_DEV) {
+            if (response.headers["content-type"] === mime ||
+                response.headers["content-type"] === "application/json") {
+                debug(responseStr);
+            }
         }
         const lsdJson = global.JSON.parse(responseStr);
-        debug(lsdJson);
+        if (IS_DEV) {
+            debug(lsdJson);
+        }
 
         lcp.LSDJson = lsdJson;
 

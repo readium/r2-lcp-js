@@ -16,6 +16,8 @@ import URITemplate = require("urijs/src/URITemplate");
 
 const debug = debug_("r2:lcp#lsd/register");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 export async function lsdRegister(
     lsdJson: any,
     deviceIDManager: IDeviceIDManager): Promise<any> {
@@ -64,7 +66,10 @@ export async function lsdRegister(
         if (!deviceIDForStatusDoc) {
             doRegister = true;
         } else if (deviceIDForStatusDoc !== deviceID) {
-            debug("LSD registered device ID is different? ", lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+            if (IS_DEV) {
+                debug("LSD registered device ID is different? ",
+                    lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+            }
             // this should really never happen ... but let's ensure anyway.
             doRegister = true;
         }
@@ -82,7 +87,9 @@ export async function lsdRegister(
         // url = url.replace("{?id,name}", ""); // TODO: smarter regexp?
         // url = new URI(url).setQuery("id", deviceID).setQuery("name", deviceNAME).toString();
     }
-    debug("REGISTER: " + registerURL);
+    if (IS_DEV) {
+        debug("REGISTER: " + registerURL);
+    }
 
     return new Promise<any>(async (resolve, reject) => {
         const failure = (err: any) => {
@@ -91,9 +98,11 @@ export async function lsdRegister(
 
         const success = async (response: request.RequestResponse) => {
 
-            Object.keys(response.headers).forEach((header: string) => {
-                debug(header + " => " + response.headers[header]);
-            });
+            if (IS_DEV) {
+                Object.keys(response.headers).forEach((header: string) => {
+                    debug(header + " => " + response.headers[header]);
+                });
+            }
 
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 failure("HTTP CODE " + response.statusCode);
@@ -105,7 +114,18 @@ export async function lsdRegister(
                     return;
                 }
                 const s = d.toString("utf8");
-                debug(s);
+                if (IS_DEV) {
+                    debug(s);
+                }
+                try {
+                    const j = global.JSON.parse(s);
+                    if (IS_DEV) {
+                        debug(j);
+                    }
+                } catch (jsonErr) {
+                    debug(jsonErr);
+                    // ignore
+                }
                 return;
             }
 
@@ -117,10 +137,14 @@ export async function lsdRegister(
                 return;
             }
             const responseStr = responseData.toString("utf8");
-            debug(responseStr);
+            if (IS_DEV) {
+                debug(responseStr);
+            }
             const responseJson = global.JSON.parse(responseStr);
-            debug(responseJson);
-            debug(responseJson.status);
+            if (IS_DEV) {
+                debug(responseJson);
+                debug(responseJson.status);
+            }
 
             if (responseJson.status === "active") {
                 try {

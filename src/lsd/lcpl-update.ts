@@ -15,6 +15,8 @@ import { LCP } from "../parser/epub/lcp";
 
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 export async function lsdLcpUpdate(
     lsdJson: any,
     lcp: LCP): Promise<string> {
@@ -26,7 +28,9 @@ export async function lsdLcpUpdate(
         const forceUpdate = false; // just for testing!
         if (forceUpdate ||
             updatedLicense.isBefore(updatedLicenseLSD)) {
-            debug("LSD license updating...");
+            if (IS_DEV) {
+                debug("LSD license updating...");
+            }
             if (lsdJson.links) {
                 const licenseLink = lsdJson.links.find((link: any) => {
                     return link.rel === "license";
@@ -35,7 +39,9 @@ export async function lsdLcpUpdate(
                     return Promise.reject("LSD license link is missing.");
                 }
 
-                debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                if (IS_DEV) {
+                    debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                }
 
                 return new Promise<any>(async (resolve, reject) => {
 
@@ -45,9 +51,11 @@ export async function lsdLcpUpdate(
 
                     const success = async (response: request.RequestResponse) => {
 
-                        Object.keys(response.headers).forEach((header: string) => {
-                            debug(header + " => " + response.headers[header]);
-                        });
+                        if (IS_DEV) {
+                            Object.keys(response.headers).forEach((header: string) => {
+                                debug(header + " => " + response.headers[header]);
+                            });
+                        }
 
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             // SEE: https://github.com/readium/readium-lcp-server/issues/150#issuecomment-356993350
@@ -75,7 +83,18 @@ export async function lsdLcpUpdate(
                                 return;
                             }
                             const s = d.toString("utf8");
-                            debug(s);
+                            if (IS_DEV) {
+                                debug(s);
+                            }
+                            try {
+                                const j = global.JSON.parse(s);
+                                if (IS_DEV) {
+                                    debug(j);
+                                }
+                            } catch (jsonErr) {
+                                debug(jsonErr);
+                                // ignore
+                            }
                             return;
                         }
 
@@ -87,7 +106,9 @@ export async function lsdLcpUpdate(
                             return;
                         }
                         const lcplStr = responseData.toString("utf8");
-                        debug(lcplStr);
+                        if (IS_DEV) {
+                            debug(lcplStr);
+                        }
                         resolve(lcplStr);
                     };
 

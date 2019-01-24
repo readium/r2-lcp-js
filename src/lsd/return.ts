@@ -16,6 +16,8 @@ import URITemplate = require("urijs/src/URITemplate");
 
 const debug = debug_("r2:lcp#lsd/return");
 
+const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
+
 export async function lsdReturn(
     lsdJson: any,
     deviceIDManager: IDeviceIDManager): Promise<any> {
@@ -55,7 +57,9 @@ export async function lsdReturn(
         // url = url.replace("{?end,id,name}", ""); // TODO: smarter regexp?
         // url = new URI(url).setQuery("id", deviceID).setQuery("name", deviceNAME).toString();
     }
-    debug("RETURN: " + returnURL);
+    if (IS_DEV) {
+        debug("RETURN: " + returnURL);
+    }
 
     return new Promise<any>(async (resolve, reject) => {
 
@@ -65,9 +69,11 @@ export async function lsdReturn(
 
         const success = async (response: request.RequestResponse) => {
 
-            Object.keys(response.headers).forEach((header: string) => {
-                debug(header + " => " + response.headers[header]);
-            });
+            if (IS_DEV) {
+                Object.keys(response.headers).forEach((header: string) => {
+                    debug(header + " => " + response.headers[header]);
+                });
+            }
 
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                 failure("HTTP CODE " + response.statusCode);
@@ -79,7 +85,18 @@ export async function lsdReturn(
                     return;
                 }
                 const s = d.toString("utf8");
-                debug(s);
+                if (IS_DEV) {
+                    debug(s);
+                }
+                try {
+                    const j = global.JSON.parse(s);
+                    if (IS_DEV) {
+                        debug(j);
+                    }
+                } catch (jsonErr) {
+                    debug(jsonErr);
+                    // ignore
+                }
                 return;
             }
 
@@ -91,9 +108,13 @@ export async function lsdReturn(
                 return;
             }
             const responseStr = responseData.toString("utf8");
-            debug(responseStr);
+            if (IS_DEV) {
+                debug(responseStr);
+            }
             const responseJson = global.JSON.parse(responseStr);
-            debug(responseJson);
+            if (IS_DEV) {
+                debug(responseJson);
+            }
 
             resolve(responseJson);
         };
