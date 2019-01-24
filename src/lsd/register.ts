@@ -125,12 +125,13 @@ export async function lsdRegister(
                         if (IS_DEV) {
                             debug(failJson);
                         }
+                        failJson.httpStatusCode = response.statusCode;
                         failure(failJson);
                     } catch (jsonErr) {
                         if (IS_DEV) {
                             debug(jsonErr);
                         }
-                        failure(failStr);
+                        failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
                     }
                 } catch (strErr) {
                     if (IS_DEV) {
