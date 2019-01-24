@@ -1,10 +1,30 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.5...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.6...develop
 
 Changes:
 * TODO
+
+# 1.0.6
+
+> Build environment: NodeJS `8.14.1`, NPM `6.4.1`
+
+Changes:
+* NPM updates
+* Code comment references to latest JSON Schema
+* LCP / LSD debug console messages harmonized
+* LCP / LSD promise.reject (async/await try/catch) errors now HTTP status code (number type), or object payload with ProblemJSON, returned by server, or just plain string if cannot parse response body.
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.6/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.6/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.6
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.5...v1.0.6
 
 # 1.0.5
 
