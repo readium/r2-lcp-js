@@ -105,24 +105,38 @@ export async function lsdRegister(
             }
 
             if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
-                failure("HTTP CODE " + response.statusCode);
-                if (IS_DEV) {
-                    let failBuff: Buffer;
-                    try {
-                        failBuff = await streamToBufferPromise(response);
-                    } catch (err) {
-                        debug(err);
-                        return;
+                let failBuff: Buffer;
+                try {
+                    failBuff = await streamToBufferPromise(response);
+                } catch (buffErr) {
+                    if (IS_DEV) {
+                        debug(buffErr);
                     }
+                    failure(response.statusCode);
+                    return;
+                }
+                try {
                     const failStr = failBuff.toString("utf8");
-                    debug(failStr);
+                    if (IS_DEV) {
+                        debug(failStr);
+                    }
                     try {
                         const failJson = global.JSON.parse(failStr);
-                        debug(failJson);
+                        if (IS_DEV) {
+                            debug(failJson);
+                        }
+                        failure(failJson);
                     } catch (jsonErr) {
-                        debug(jsonErr);
-                        // ignore
+                        if (IS_DEV) {
+                            debug(jsonErr);
+                        }
+                        failure(failStr);
                     }
+                } catch (strErr) {
+                    if (IS_DEV) {
+                        debug(strErr);
+                    }
+                    failure(response.statusCode);
                 }
                 return;
             }
