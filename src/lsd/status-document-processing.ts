@@ -15,7 +15,7 @@ import { LCP } from "../parser/epub/lcp";
 import { LSD, StatusEnum } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 import { lsdLcpUpdate } from "./lcpl-update";
-import { lsdRegister } from "./register";
+import { lsdRegister_ } from "./register";
 
 const debug = debug_("r2:lcp#lsd/status-document-processing");
 
@@ -204,7 +204,7 @@ export async function launchStatusDocumentProcessing(
 
         let registerResponseJson: any;
         try {
-            registerResponseJson = await lsdRegister(lcp, deviceIDManager);
+            registerResponseJson = await lsdRegister_(lcp.LSD, deviceIDManager);
         } catch (err) {
             debug(err);
         }

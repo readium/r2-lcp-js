@@ -9,8 +9,9 @@ import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
+import { JSON as TAJSON } from "ta-json-x";
 
-import { LCP } from "../parser/epub/lcp";
+import { LSD } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
@@ -20,17 +21,37 @@ const debug = debug_("r2:lcp#lsd/return");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
 export async function lsdReturn(
-    lcp: LCP,
+    lsdJSON: any,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lcp.LSD) {
+    if (lsdJSON instanceof LSD) {
+        return lsdReturn_(lsdJSON as LSD, deviceIDManager);
+    }
+
+    let lsd: LSD | undefined;
+    try {
+        lsd = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+    } catch (err) {
+        debug(err);
+        debug(lsdJSON);
+        return Promise.reject("Bad LSD JSON?");
+    }
+
+    return lsdReturn_(lsd, deviceIDManager);
+}
+
+export async function lsdReturn_(
+    lsd: LSD,
+    deviceIDManager: IDeviceIDManager): Promise<any> {
+
+    if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
     }
-    if (!lcp.LSD.Links) {
+    if (!lsd.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseReturn = lcp.LSD.Links.find((link) => {
+    const licenseReturn = lsd.Links.find((link) => {
         return link.Rel === "return";
     });
     if (!licenseReturn) {

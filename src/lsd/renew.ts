@@ -9,8 +9,9 @@ import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
+import { JSON as TAJSON } from "ta-json-x";
 
-import { LCP } from "../parser/epub/lcp";
+import { LSD } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URI = require("urijs");
@@ -22,17 +23,38 @@ const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV =
 
 export async function lsdRenew(
     end: Date | undefined,
-    lcp: LCP,
+    lsdJSON: any,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lcp.LSD) {
+    if (lsdJSON instanceof LSD) {
+        return lsdRenew_(end, lsdJSON as LSD, deviceIDManager);
+    }
+
+    let lsd: LSD | undefined;
+    try {
+        lsd = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+    } catch (err) {
+        debug(err);
+        debug(lsdJSON);
+        return Promise.reject("Bad LSD JSON?");
+    }
+
+    return lsdRenew_(end, lsd, deviceIDManager);
+}
+
+export async function lsdRenew_(
+    end: Date | undefined,
+    lsd: LSD,
+    deviceIDManager: IDeviceIDManager): Promise<any> {
+
+    if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
     }
-    if (!lcp.LSD.Links) {
+    if (!lsd.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseRenew = lcp.LSD.Links.find((link) => {
+    const licenseRenew = lsd.Links.find((link) => {
         return link.Rel === "renew";
     });
     if (!licenseRenew) {

@@ -9,8 +9,9 @@ import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
+import { JSON as TAJSON } from "ta-json-x";
 
-import { LCP } from "../parser/epub/lcp";
+import { LSD } from "../parser/epub/lsd";
 import { StatusEnum } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 
@@ -21,17 +22,37 @@ const debug = debug_("r2:lcp#lsd/register");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
 export async function lsdRegister(
-    lcp: LCP,
+    lsdJSON: any,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lcp.LSD) {
+    if (lsdJSON instanceof LSD) {
+        return lsdRegister_(lsdJSON as LSD, deviceIDManager);
+    }
+
+    let lsd: LSD | undefined;
+    try {
+        lsd = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+    } catch (err) {
+        debug(err);
+        debug(lsdJSON);
+        return Promise.reject("Bad LSD JSON?");
+    }
+
+    return lsdRegister_(lsd, deviceIDManager);
+}
+
+export async function lsdRegister_(
+    lsd: LSD,
+    deviceIDManager: IDeviceIDManager): Promise<any> {
+
+    if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
     }
-    if (!lcp.LSD.Links) {
+    if (!lsd.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseRegister = lcp.LSD.Links.find((link) => {
+    const licenseRegister = lsd.Links.find((link) => {
         return link.Rel === "register";
     });
     if (!licenseRegister) {
@@ -55,13 +76,13 @@ export async function lsdRegister(
     }
 
     let doRegister = false;
-    if (lcp.LSD.Status === StatusEnum.Ready) {
+    if (lsd.Status === StatusEnum.Ready) {
         doRegister = true;
-    } else if (lcp.LSD.Status === StatusEnum.Active) {
+    } else if (lsd.Status === StatusEnum.Active) {
 
         let deviceIDForStatusDoc: string | undefined;
         try {
-            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lcp.LSD.ID);
+            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsd.ID);
         } catch (err) {
             debug(err);
             // ignore
@@ -73,7 +94,7 @@ export async function lsdRegister(
         } else if (deviceIDForStatusDoc !== deviceID) {
             if (IS_DEV) {
                 debug("LSD registered device ID is different? ",
-                    lcp.LSD.ID, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                    lsd.ID, ": ", deviceIDForStatusDoc, " --- ", deviceID);
             }
             // this should really never happen ... but let's ensure anyway.
             doRegister = true;
