@@ -39,13 +39,14 @@ export async function lsdRenew(
         return Promise.reject("Bad LSD JSON?");
     }
 
-    return lsdRenew_(end, lsd, deviceIDManager);
+    const obj = lsdRenew_(end, lsd, deviceIDManager);
+    return TAJSON.serialize(obj);
 }
 
 export async function lsdRenew_(
     end: Date | undefined,
     lsd: LSD,
-    deviceIDManager: IDeviceIDManager): Promise<any> {
+    deviceIDManager: IDeviceIDManager): Promise<LSD> {
 
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
@@ -96,7 +97,7 @@ export async function lsdRenew_(
         debug("RENEW: " + renewURL);
     }
 
-    return new Promise<any>(async (resolve, reject) => {
+    return new Promise<LSD>(async (resolve, reject) => {
 
         const failure = (err: any) => {
             reject(err);
@@ -164,7 +165,16 @@ export async function lsdRenew_(
                 debug(responseJson);
             }
 
-            resolve(responseJson);
+            try {
+                const newLsd = TAJSON.deserialize<LSD>(responseJson, LSD);
+                if (IS_DEV) {
+                    debug(newLsd);
+                }
+                resolve(newLsd);
+            } catch (err) {
+                debug(err);
+                resolve(responseJson);
+            }
         };
 
         const headers = {

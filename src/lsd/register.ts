@@ -38,12 +38,13 @@ export async function lsdRegister(
         return Promise.reject("Bad LSD JSON?");
     }
 
-    return lsdRegister_(lsd, deviceIDManager);
+    const obj = lsdRegister_(lsd, deviceIDManager);
+    return TAJSON.serialize(obj);
 }
 
 export async function lsdRegister_(
     lsd: LSD,
-    deviceIDManager: IDeviceIDManager): Promise<any> {
+    deviceIDManager: IDeviceIDManager): Promise<LSD> {
 
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
@@ -117,7 +118,7 @@ export async function lsdRegister_(
         debug("REGISTER: " + registerURL);
     }
 
-    return new Promise<any>(async (resolve, reject) => {
+    return new Promise<LSD>(async (resolve, reject) => {
         const failure = (err: any) => {
             reject(err);
         };
@@ -195,7 +196,16 @@ export async function lsdRegister_(
                 }
             }
 
-            resolve(responseJson);
+            try {
+                const newLsd = TAJSON.deserialize<LSD>(responseJson, LSD);
+                if (IS_DEV) {
+                    debug(newLsd);
+                }
+                resolve(newLsd);
+            } catch (err) {
+                debug(err);
+                resolve(responseJson);
+            }
         };
 
         const headers = {

@@ -37,12 +37,13 @@ export async function lsdReturn(
         return Promise.reject("Bad LSD JSON?");
     }
 
-    return lsdReturn_(lsd, deviceIDManager);
+    const obj = lsdReturn_(lsd, deviceIDManager);
+    return TAJSON.serialize(obj);
 }
 
 export async function lsdReturn_(
     lsd: LSD,
-    deviceIDManager: IDeviceIDManager): Promise<any> {
+    deviceIDManager: IDeviceIDManager): Promise<LSD> {
 
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
@@ -86,7 +87,7 @@ export async function lsdReturn_(
         debug("RETURN: " + returnURL);
     }
 
-    return new Promise<any>(async (resolve, reject) => {
+    return new Promise<LSD>(async (resolve, reject) => {
 
         const failure = (err: any) => {
             reject(err);
@@ -154,7 +155,16 @@ export async function lsdReturn_(
                 debug(responseJson);
             }
 
-            resolve(responseJson);
+            try {
+                const newLsd = TAJSON.deserialize<LSD>(responseJson, LSD);
+                if (IS_DEV) {
+                    debug(newLsd);
+                }
+                resolve(newLsd);
+            } catch (err) {
+                debug(err);
+                resolve(responseJson);
+            }
         };
 
         const headers = {
