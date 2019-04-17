@@ -55,30 +55,48 @@ export interface IDecryptedBuffer {
 
 @JsonObject()
 export class LCP {
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L11
     @JsonProperty("id")
     public ID!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L20
     @JsonProperty("provider")
     public Provider!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L15
     @JsonProperty("issued")
     public Issued!: Date;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L25
     @JsonProperty("updated")
     public Updated!: Date;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L30
     @JsonProperty("encryption")
     public Encryption!: Encryption;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L97
     @JsonProperty("rights")
     public Rights!: Rights;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L122
     @JsonProperty("user")
     public User!: User;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L146
     @JsonProperty("signature")
     public Signature!: Signature;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L90
     @JsonProperty("links")
     @JsonElementType(Link)
     public Links!: Link[];

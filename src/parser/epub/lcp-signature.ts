@@ -13,12 +13,19 @@ import {
 
 @JsonObject()
 export class Signature {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L149
     @JsonProperty("algorithm")
     public Algorithm!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L154
     @JsonProperty("certificate")
     public Certificate!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L159
     @JsonProperty("value")
     public Value!: string;
 }

@@ -13,15 +13,24 @@ import {
 
 @JsonObject()
 export class Rights {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L100
     @JsonProperty("print")
     public Print!: number;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L105
     @JsonProperty("copy")
     public Copy!: number;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L110
     @JsonProperty("start")
     public Start!: Date;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L115
     @JsonProperty("end")
     public End!: Date;
 }

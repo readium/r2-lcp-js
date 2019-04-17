@@ -13,12 +13,19 @@ import {
 
 @JsonObject()
 export class UserKey {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L71
     @JsonProperty("text_hint")
     public TextHint!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L61
     @JsonProperty("algorithm")
     public Algorithm!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L66
     @JsonProperty("key_check")
     public KeyCheck!: string;
 }

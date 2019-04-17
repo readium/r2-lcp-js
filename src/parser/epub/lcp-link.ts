@@ -13,27 +13,44 @@ import {
 
 @JsonObject()
 export class Link {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L38
     @JsonProperty("length")
     public Length!: number;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L7
     @JsonProperty("href")
     public Href!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L19
     @JsonProperty("title")
     public Title!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L11
     @JsonProperty("type")
     public Type!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L15
     @JsonProperty("templated")
     public Templated!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L33
     @JsonProperty("profile")
     public Profile!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L42
     @JsonProperty("hash")
     public Hash!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L23
     @JsonProperty("rel")
     public Rel!: string;
 

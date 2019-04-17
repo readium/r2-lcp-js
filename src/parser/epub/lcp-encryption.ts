@@ -16,12 +16,19 @@ import { UserKey } from "./lcp-userkey";
 
 @JsonObject()
 export class Encryption {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L34
     @JsonProperty("profile")
     public Profile!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L39
     @JsonProperty("content_key")
     public ContentKey!: ContentKey;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L58
     @JsonProperty("user_key")
     public UserKey!: UserKey;
 }

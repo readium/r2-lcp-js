@@ -13,9 +13,14 @@ import {
 
 @JsonObject()
 export class ContentKey {
+
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L42
     @JsonProperty("encrypted_value")
     public EncryptedValue!: string;
 
+    // tslint:disable-next-line:max-line-length
+    // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/license.schema.json#L47
     @JsonProperty("algorithm")
     public Algorithm!: string;
 }
