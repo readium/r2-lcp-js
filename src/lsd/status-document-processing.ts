@@ -186,15 +186,16 @@ export async function launchStatusDocumentProcessing(
             return;
         }
 
+        // lcp.LSD.Status !== StatusEnum.Active && lcp.LSD.Status !== StatusEnum.Ready
         if (lcp.LSD.Status === StatusEnum.Revoked
             || lcp.LSD.Status === StatusEnum.Returned
             || lcp.LSD.Status === StatusEnum.Cancelled
             || lcp.LSD.Status === StatusEnum.Expired) {
 
-            debug("What?! LSD " + lcp.LSD.Status);
+            debug("What?! LSD status:" + lcp.LSD.Status);
             // This should really never happen,
-            // as the LCP license should not even pass validation
-            // due to passed end date / expired timestamp
+            // as the LCP license should not even have passed validation
+            // due to expired end date / timestamp
             if (onStatusDocumentProcessingComplete) {
                 onStatusDocumentProcessingComplete(undefined);
             }

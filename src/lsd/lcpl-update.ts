@@ -13,6 +13,8 @@ import * as requestPromise from "request-promise-native";
 
 import { LCP } from "../parser/epub/lcp";
 
+// import { StatusEnum } from "../parser/epub/lsd";
+
 const debug = debug_("r2:lcp#lsd/lcpl-update");
 
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
@@ -29,7 +31,13 @@ export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
         const updatedLicense = moment(lcp.Updated || lcp.Issued);
         const forceUpdate = false; // just for testing!
         if (forceUpdate ||
-            updatedLicense.isBefore(updatedLicenseLSD)) {
+            (updatedLicense.isBefore(updatedLicenseLSD)
+            // tslint:disable-next-line:max-line-length
+            // TODO: Should we check for this? Is LCP server supposed to deliver non-usable licenses? (e.g. rights.end in the past) Let's do a sanity check on response LCP JSON (see below)
+            // tslint:disable-next-line:max-line-length
+            // && (lcp.LSD.Status !== StatusEnum.Cancelled && lcp.LSD.Status !== StatusEnum.Expired && lcp.LSD.Status !== StatusEnum.Returned && lcp.LSD.Status !== StatusEnum.Revoked)
+            // && (lcp.LSD.Status === StatusEnum.Active || lcp.LSD.Status === StatusEnum.Ready)
+            )) {
             if (IS_DEV) {
                 debug("LSD license updating...");
             }
@@ -58,6 +66,22 @@ export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
                                 debug(header + " => " + response.headers[header]);
                             });
                         }
+
+                        const tryErrorJson = (str: string) => {
+                            try {
+                                const failJson = global.JSON.parse(str);
+                                if (IS_DEV) {
+                                    debug(failJson);
+                                }
+                                failJson.httpStatusCode = response.statusCode;
+                                failure(failJson);
+                            } catch (jsonErr) {
+                                if (IS_DEV) {
+                                    debug(jsonErr);
+                                }
+                                failure({ httpStatusCode: response.statusCode, httpResponseBody: str });
+                            }
+                        };
 
                         if (response.statusCode && (response.statusCode < 200 || response.statusCode >= 300)) {
                             // SEE: https://github.com/readium/readium-lcp-server/issues/150#issuecomment-356993350
@@ -92,19 +116,7 @@ export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
                                 if (IS_DEV) {
                                     debug(failStr);
                                 }
-                                try {
-                                    const failJson = global.JSON.parse(failStr);
-                                    if (IS_DEV) {
-                                        debug(failJson);
-                                    }
-                                    failJson.httpStatusCode = response.statusCode;
-                                    failure(failJson);
-                                } catch (jsonErr) {
-                                    if (IS_DEV) {
-                                        debug(jsonErr);
-                                    }
-                                    failure({ httpStatusCode: response.statusCode, httpResponseBody: failStr });
-                                }
+                                tryErrorJson(failStr);
                             } catch (strErr) {
                                 if (IS_DEV) {
                                     debug(strErr);
@@ -125,6 +137,26 @@ export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
                         if (IS_DEV) {
                             debug(lcplStr);
                         }
+
+                        try {
+                            const tryLcpJson = global.JSON.parse(lcplStr);
+                            // tslint:disable-next-line:max-line-length
+                            if (!tryLcpJson.id || !tryLcpJson.issued || !tryLcpJson.provider || !tryLcpJson.encryption || !tryLcpJson.encryption.profile) {
+                                if (IS_DEV) {
+                                    debug(lcplStr);
+                                    debug("NOT AN LCP LICENSE!"); // Some LCP servers respond 200 with error message!
+                                }
+                                tryErrorJson(lcplStr);
+                                return;
+                            }
+                        } catch (jsonErr) {
+                            if (IS_DEV) {
+                                debug(jsonErr);
+                            }
+                            tryErrorJson(lcplStr);
+                            return;
+                        }
+
                         resolve(lcplStr);
                     };
 
