@@ -17,13 +17,15 @@ const debug = debug_("r2:lcp#lsd/lcpl-update");
 
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
-export async function lsdLcpUpdate(
-    lsdJson: any,
-    lcp: LCP): Promise<string> {
+export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
 
-    if (lsdJson.updated && lsdJson.updated.license &&
+    if (!lcp.LSD) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+
+    if (lcp.LSD.Updated && lcp.LSD.Updated.License &&
         (lcp.Updated || lcp.Issued)) {
-        const updatedLicenseLSD = moment(lsdJson.updated.license);
+        const updatedLicenseLSD = moment(lcp.LSD.Updated.License);
         const updatedLicense = moment(lcp.Updated || lcp.Issued);
         const forceUpdate = false; // just for testing!
         if (forceUpdate ||
@@ -31,16 +33,16 @@ export async function lsdLcpUpdate(
             if (IS_DEV) {
                 debug("LSD license updating...");
             }
-            if (lsdJson.links) {
-                const licenseLink = lsdJson.links.find((link: any) => {
-                    return link.rel === "license";
+            if (lcp.LSD.Links) {
+                const licenseLink = lcp.LSD.Links.find((link) => {
+                    return link.Rel === "license";
                 });
                 if (!licenseLink) {
                     return Promise.reject("LSD license link is missing.");
                 }
 
                 if (IS_DEV) {
-                    debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.href);
+                    debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.Href);
                 }
 
                 return new Promise<any>(async (resolve, reject) => {
@@ -65,7 +67,7 @@ export async function lsdLcpUpdate(
                             //     debug("TRYING AGAIN: " + licenseLink.href);
                             //     let newRes: any;
                             //     try {
-                            //         newRes = await lsdLcpUpdate(lsdJson, lcp); // recursive
+                            //         newRes = await lsdLcpUpdate(lcp); // recursive
                             //     } catch (err) {
                             //         failure(err);
                             //         return;
@@ -137,7 +139,7 @@ export async function lsdLcpUpdate(
                         request.get({
                             headers,
                             method: "GET",
-                            uri: licenseLink.href,
+                            uri: licenseLink.Href,
                         })
                             .on("response", success)
                             .on("error", failure);
@@ -149,7 +151,7 @@ export async function lsdLcpUpdate(
                                 headers,
                                 method: "GET",
                                 resolveWithFullResponse: true,
-                                uri: licenseLink.href,
+                                uri: licenseLink.Href,
                             });
                         } catch (err) {
                             failure(err);

@@ -27,6 +27,7 @@ import { Link } from "./lcp-link";
 import { Rights } from "./lcp-rights";
 import { Signature } from "./lcp-signature";
 import { User } from "./lcp-user";
+import { LSD } from "./lsd";
 
 const AES_BLOCK_SIZE = 16;
 
@@ -104,7 +105,7 @@ export class LCP {
     public ZipPath: string | undefined;
     public JsonSource: string | undefined;
 
-    public LSDJson: any;
+    public LSD: LSD | undefined;
 
     // JS impl
     public ContentKey: Buffer | undefined;

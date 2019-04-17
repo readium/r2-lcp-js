@@ -9,8 +9,10 @@ import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
+import { JSON as TAJSON } from "ta-json-x";
 
 import { LCP } from "../parser/epub/lcp";
+import { LSD, StatusEnum } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 import { lsdLcpUpdate } from "./lcpl-update";
 import { lsdRegister } from "./register";
@@ -120,12 +122,23 @@ export async function launchStatusDocumentProcessing(
                 debug(responseStr);
             }
         }
-        const lsdJson = global.JSON.parse(responseStr);
+        const lsdJSON = global.JSON.parse(responseStr);
         if (IS_DEV) {
-            debug(lsdJson);
+            debug(lsdJSON);
         }
 
-        lcp.LSDJson = lsdJson;
+        try {
+            lcp.LSD = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+            if (IS_DEV) {
+                debug(lcp.LSD);
+            }
+        } catch (err) {
+            debug(err);
+            if (onStatusDocumentProcessingComplete) {
+                onStatusDocumentProcessingComplete(undefined);
+            }
+            return;
+        }
 
         // debug(lsdJson.id);
         // debug(lsdJson.status); // revoked, returned, cancelled, expired
@@ -158,7 +171,7 @@ export async function launchStatusDocumentProcessing(
 
         let licenseUpdateResponseJson: string | undefined;
         try {
-            licenseUpdateResponseJson = await lsdLcpUpdate(lsdJson, lcp);
+            licenseUpdateResponseJson = await lsdLcpUpdate(lcp);
         } catch (err) {
             debug(err);
             // if (onStatusDocumentProcessingComplete) {
@@ -173,12 +186,12 @@ export async function launchStatusDocumentProcessing(
             return;
         }
 
-        if (lsdJson.status === "revoked"
-            || lsdJson.status === "returned"
-            || lsdJson.status === "cancelled"
-            || lsdJson.status === "expired") {
+        if (lcp.LSD.Status === StatusEnum.Revoked
+            || lcp.LSD.Status === StatusEnum.Returned
+            || lcp.LSD.Status === StatusEnum.Cancelled
+            || lcp.LSD.Status === StatusEnum.Expired) {
 
-            debug("What?! LSD " + lsdJson.status);
+            debug("What?! LSD " + lcp.LSD.Status);
             // This should really never happen,
             // as the LCP license should not even pass validation
             // due to passed end date / expired timestamp
@@ -190,10 +203,19 @@ export async function launchStatusDocumentProcessing(
 
         let registerResponseJson: any;
         try {
-            registerResponseJson = await lsdRegister(lsdJson, deviceIDManager);
-            lcp.LSDJson = registerResponseJson;
+            registerResponseJson = await lsdRegister(lcp, deviceIDManager);
         } catch (err) {
             debug(err);
+        }
+        if (registerResponseJson) {
+            try {
+                lcp.LSD = TAJSON.deserialize<LSD>(registerResponseJson, LSD);
+                if (IS_DEV) {
+                    debug(lcp.LSD);
+                }
+            } catch (err) {
+                debug(err);
+            }
         }
         if (onStatusDocumentProcessingComplete) {
             onStatusDocumentProcessingComplete(undefined);

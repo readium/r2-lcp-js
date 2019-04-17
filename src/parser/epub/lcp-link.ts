@@ -37,7 +37,7 @@ export class Link {
     // tslint:disable-next-line:max-line-length
     // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L15
     @JsonProperty("templated")
-    public Templated!: string;
+    public Templated!: boolean;
 
     // tslint:disable-next-line:max-line-length
     // https://github.com/readium/lcp-specs/blob/5828f83b6fffee23cbc38870f6f6431744191f21/schema/link.schema.json#L33

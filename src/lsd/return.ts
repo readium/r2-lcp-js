@@ -10,6 +10,7 @@ import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
 
+import { LCP } from "../parser/epub/lcp";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
@@ -19,15 +20,18 @@ const debug = debug_("r2:lcp#lsd/return");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
 export async function lsdReturn(
-    lsdJson: any,
+    lcp: LCP,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lsdJson.links) {
+    if (!lcp.LSD) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+    if (!lcp.LSD.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseReturn = lsdJson.links.find((link: any) => {
-        return link.rel === "return";
+    const licenseReturn = lcp.LSD.Links.find((link) => {
+        return link.Rel === "return";
     });
     if (!licenseReturn) {
         return Promise.reject("No LSD return link!");
@@ -49,8 +53,8 @@ export async function lsdReturn(
         return Promise.reject("Problem getting Device NAME !?");
     }
 
-    let returnURL = licenseReturn.href;
-    if (licenseReturn.templated === true || licenseReturn.templated === "true") {
+    let returnURL = licenseReturn.Href;
+    if (licenseReturn.Templated) {
         const urlTemplate = new URITemplate(returnURL);
         returnURL = (urlTemplate as any).expand({ id: deviceID, name: deviceNAME }, { strict: true });
 

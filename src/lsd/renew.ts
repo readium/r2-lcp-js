@@ -10,6 +10,7 @@ import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
 
+import { LCP } from "../parser/epub/lcp";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URI = require("urijs");
@@ -21,15 +22,18 @@ const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV =
 
 export async function lsdRenew(
     end: Date | undefined,
-    lsdJson: any,
+    lcp: LCP,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lsdJson.links) {
+    if (!lcp.LSD) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+    if (!lcp.LSD.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseRenew = lsdJson.links.find((link: any) => {
-        return link.rel === "renew";
+    const licenseRenew = lcp.LSD.Links.find((link) => {
+        return link.Rel === "renew";
     });
     if (!licenseRenew) {
         return Promise.reject("No LSD renew link!");
@@ -51,8 +55,8 @@ export async function lsdRenew(
         return Promise.reject("Problem getting Device NAME !?");
     }
 
-    let renewURL = licenseRenew.href;
-    if (licenseRenew.templated === true || licenseRenew.templated === "true") {
+    let renewURL = licenseRenew.Href;
+    if (licenseRenew.Templated) {
         const urlTemplate = new URITemplate(renewURL);
         renewURL = (urlTemplate as any).expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
 

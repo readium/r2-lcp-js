@@ -10,6 +10,8 @@ import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
 
+import { LCP } from "../parser/epub/lcp";
+import { StatusEnum } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
@@ -19,15 +21,18 @@ const debug = debug_("r2:lcp#lsd/register");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
 export async function lsdRegister(
-    lsdJson: any,
+    lcp: LCP,
     deviceIDManager: IDeviceIDManager): Promise<any> {
 
-    if (!lsdJson.links) {
+    if (!lcp.LSD) {
+        return Promise.reject("LCP LSD data is missing.");
+    }
+    if (!lcp.LSD.Links) {
         return Promise.reject("No LSD links!");
     }
 
-    const licenseRegister = lsdJson.links.find((link: any) => {
-        return link.rel === "register";
+    const licenseRegister = lcp.LSD.Links.find((link) => {
+        return link.Rel === "register";
     });
     if (!licenseRegister) {
         return Promise.reject("No LSD register link!");
@@ -50,13 +55,13 @@ export async function lsdRegister(
     }
 
     let doRegister = false;
-    if (lsdJson.status === "ready") {
+    if (lcp.LSD.Status === StatusEnum.Ready) {
         doRegister = true;
-    } else if (lsdJson.status === "active") {
+    } else if (lcp.LSD.Status === StatusEnum.Active) {
 
         let deviceIDForStatusDoc: string | undefined;
         try {
-            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lsdJson.id);
+            deviceIDForStatusDoc = await deviceIDManager.checkDeviceID(lcp.LSD.ID);
         } catch (err) {
             debug(err);
             // ignore
@@ -68,7 +73,7 @@ export async function lsdRegister(
         } else if (deviceIDForStatusDoc !== deviceID) {
             if (IS_DEV) {
                 debug("LSD registered device ID is different? ",
-                    lsdJson.id, ": ", deviceIDForStatusDoc, " --- ", deviceID);
+                    lcp.LSD.ID, ": ", deviceIDForStatusDoc, " --- ", deviceID);
             }
             // this should really never happen ... but let's ensure anyway.
             doRegister = true;
@@ -79,8 +84,8 @@ export async function lsdRegister(
         return Promise.reject("No need to LSD register.");
     }
 
-    let registerURL = licenseRegister.href;
-    if (licenseRegister.templated === true || licenseRegister.templated === "true") {
+    let registerURL = licenseRegister.Href;
+    if (licenseRegister.Templated) {
         const urlTemplate = new URITemplate(registerURL);
         registerURL = (urlTemplate as any).expand({ id: deviceID, name: deviceNAME }, { strict: true });
 
