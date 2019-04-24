@@ -60,7 +60,7 @@
     "@types/debug": "^4.1.4",
     "@types/node": "^8.10.46",
     "@types/request": "^2.48.1",
-    "@types/request-promise-native": "^1.0.15",
+    "@types/request-promise-native": "^1.0.16",
     "@types/urijs": "^1.19.0",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
@@ -73,7 +73,7 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.16.0",
     "tslint-language-service": "^0.9.9",
-    "typescript": "^3.4.4"
+    "typescript": "^3.4.5"
   },
   "files": [
     "LICENSE",
