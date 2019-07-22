@@ -199,17 +199,6 @@ export async function transformStream(
         }
     }
 
-    if (partialByteBegin < 0) {
-        partialByteBegin = 0;
-    }
-
-    if (partialByteEnd < 0) {
-        partialByteEnd = plainTextSize - 1;
-        if (linkPropertiesEncrypted.OriginalLength) {
-            partialByteEnd = linkPropertiesEncrypted.OriginalLength - 1;
-        }
-    }
-
     let destStream: NodeJS.ReadableStream;
     if (nativelyDecryptedStream) {
         destStream = nativelyDecryptedStream;
@@ -346,6 +335,19 @@ export async function transformStream(
         destStream.pipe(inflateStream);
         destStream = inflateStream;
 
+        if (!linkPropertiesEncrypted.OriginalLength) {
+            debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
+
+            let fullDeflatedBuffer: Buffer;
+            try {
+                fullDeflatedBuffer = await streamToBufferPromise(destStream);
+                linkPropertiesEncrypted.OriginalLength = fullDeflatedBuffer.length;
+                destStream = bufferToStream(fullDeflatedBuffer);
+            } catch (err) {
+                debug(err);
+            }
+        }
+
         // const counterStream = new CounterPassThroughStream(++streamCounter);
         // inflateStream.pipe(counterStream)
         //     .on("progress", function f() {
@@ -394,6 +396,17 @@ export async function transformStream(
         //         //     (this as CounterPassThroughStream).id);
         //     });
         // destStream = counterStream;
+    }
+
+    if (partialByteBegin < 0) {
+        partialByteBegin = 0;
+    }
+
+    if (partialByteEnd < 0) {
+        partialByteEnd = plainTextSize - 1;
+        if (linkPropertiesEncrypted.OriginalLength) {
+            partialByteEnd = linkPropertiesEncrypted.OriginalLength - 1;
+        }
     }
 
     const l = (!nativelyInflated && linkPropertiesEncrypted.OriginalLength) ?
