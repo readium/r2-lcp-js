@@ -265,7 +265,7 @@ export async function transformStream(
         const decryptStream = crypto.createDecipheriv("aes-256-cbc",
             // Note: assumes lcp.ContentKey has been set (can be undefined)
             // (this is only for testing the pure JS implementation anyway)
-            lcp.ContentKey as Buffer, // new Buffer(contentKey as string, "binary"),
+            lcp.ContentKey as Buffer, // Buffer.from(contentKey as string, "binary"),
             ivBuffer);
         decryptStream.setAutoPadding(false);
         rawDecryptStream.pipe(decryptStream);
@@ -499,7 +499,7 @@ export async function getDecryptedSizeStream(
             const decryptStream = crypto.createDecipheriv("aes-256-cbc",
                 // Note: assumes lcp.ContentKey has been set (can be undefined)
                 // (this is only for testing the pure JS implementation anyway)
-                lcp.ContentKey as Buffer, // new Buffer(contentKey as string, "binary"),
+                lcp.ContentKey as Buffer, // Buffer.from(contentKey as string, "binary"),
                 ivBuffer);
             decryptStream.setAutoPadding(false);
 

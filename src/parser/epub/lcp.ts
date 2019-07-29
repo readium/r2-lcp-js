@@ -261,8 +261,8 @@ export class LCP {
                                 // debug(context);
                                 this._lcpContext = context;
 
-                                // const userKey = new Buffer(this.userPassphraseHex as string, "hex");
-                                // const buff = new Buffer(context.encryptedContentKey, "hex");
+                                // const userKey = Buffer.from(this.userPassphraseHex as string, "hex");
+                                // const buff = Buffer.from(context.encryptedContentKey, "hex");
                                 // const iv = buff.slice(0, AES_BLOCK_SIZE);
                                 // const encrypted = buff.slice(AES_BLOCK_SIZE);
                                 // const decryptStream = crypto.createDecipheriv("aes-256-cbc",
@@ -340,7 +340,7 @@ export class LCP {
                 // --------------------------------
                 // WITH sshpk (works, although the recursive extraction from the CRL extension is a bit strange)
                 // import { parseCertificate } from "sshpk";
-                // const certDER = new Buffer(certBase64, "base64");
+                // const certDER = Buffer.from(certBase64, "base64");
                 // // debug(certFromBase64.toString("hex"));
                 // const cert = parseCertificate(certDER, "x509");
                 // // const cert = parseCertificate(certPEM, "pem");
@@ -527,9 +527,9 @@ export class LCP {
     private tryUserKey(lcpUserKey: string): boolean {
 
         // const userKey = forge.util.hexToBytes(passPhrase);
-        const userKey = new Buffer(lcpUserKey, "hex");
+        const userKey = Buffer.from(lcpUserKey, "hex");
 
-        const keyCheck = new Buffer(this.Encryption.UserKey.KeyCheck, "base64");
+        const keyCheck = Buffer.from(this.Encryption.UserKey.KeyCheck, "base64");
         // .toString("binary");
 
         // const keyCheck_ = forge.util.decode64(lcp.Encryption.UserKey.KeyCheck);
@@ -611,7 +611,7 @@ export class LCP {
         }
 
         const encryptedContentKey =
-            new Buffer(this.Encryption.ContentKey.EncryptedValue, "base64");
+            Buffer.from(this.Encryption.ContentKey.EncryptedValue, "base64");
         // .toString("binary");
 
         // const iv2 = encryptedContentKey.substring(0, AES_BLOCK_SIZE);
@@ -649,7 +649,7 @@ export class LCP {
         // aesCbcDecipher2.start({ iv: iv2, additionalData_: "binary-encoded string" });
         // aesCbcDecipher2.update(toDecrypt2);
         // aesCbcDecipher2.finish();
-        // const contentKey = new Buffer(aesCbcDecipher2.output.bytes());
+        // const contentKey = Buffer.from(aesCbcDecipher2.output.bytes());
 
         // let userKey: string | undefined;
         // const lcpPass = this.findFromInternal("lcp_user_pass_hash");

@@ -634,7 +634,7 @@ export class TransformerLCPAlt extends TransformerLCP {
         // debug(forge.util.bytesToHex(decryptedZipData));
         // debug(decryptedZipData.toHex());
 
-        const buff = new Buffer(decryptedZipData, "binary");
+        const buff = Buffer.from(decryptedZipData, "binary");
 
         // debug("LCP innerDecrypt() buff.length: " + buff.length);
 
