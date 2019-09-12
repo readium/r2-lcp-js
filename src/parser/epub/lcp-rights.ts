@@ -6,10 +6,7 @@
 // ==LICENSE-END==
 
 // https://github.com/edcarroll/ta-json
-import {
-    JsonObject,
-    JsonProperty,
-} from "ta-json-x";
+import { JsonObject, JsonProperty } from "ta-json-x";
 
 @JsonObject()
 export class Rights {

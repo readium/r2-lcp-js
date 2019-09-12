@@ -6,11 +6,7 @@
 // ==LICENSE-END==
 
 // https://github.com/edcarroll/ta-json
-import {
-    JsonElementType,
-    JsonObject,
-    JsonProperty,
-} from "ta-json-x";
+import { JsonElementType, JsonObject, JsonProperty } from "ta-json-x";
 
 import { Link } from "./lcp-link";
 import { LsdEvent } from "./lsd-event";

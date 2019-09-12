@@ -6,10 +6,7 @@
 // ==LICENSE-END==
 
 // https://github.com/edcarroll/ta-json
-import {
-    JsonObject,
-    JsonProperty,
-} from "ta-json-x";
+import { JsonObject, JsonProperty } from "ta-json-x";
 
 // tslint:disable-next-line:max-line-length
 // https://github.com/readium/webpub-manifest/blob/917c83e798e3eda42b3e9d0dc92f0fef31b16211/schema/extensions/epub/properties.schema.json#L56

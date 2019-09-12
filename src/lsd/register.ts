@@ -5,14 +5,14 @@
 // that can be found in the LICENSE file exposed on Github (readium) in the project repository.
 // ==LICENSE-END==
 
-import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
 import { JSON as TAJSON } from "ta-json-x";
 
-import { LSD } from "../parser/epub/lsd";
-import { StatusEnum } from "../parser/epub/lsd";
+import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
+
+import { LSD, StatusEnum } from "../parser/epub/lsd";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URITemplate = require("urijs/src/URITemplate");
