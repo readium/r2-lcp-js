@@ -179,6 +179,7 @@ export async function lsdRenew_(
         };
 
         const headers = {
+            "Accept": "application/json,application/xml",
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
         };
 
