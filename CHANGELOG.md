@@ -1,10 +1,27 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.16...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.17...develop
 
 Changes:
 * TODO
+
+# 1.0.17
+
+> Build environment: NodeJS `12.13.0`, NPM `6.12.1`
+
+Changes:
+* Fixed JSON vs. TypeScript object LSD register response error
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.17/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.17/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.17
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.16...v1.0.17
 
 # 1.0.16
 
