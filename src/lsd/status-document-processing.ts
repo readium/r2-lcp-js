@@ -203,20 +203,16 @@ export async function launchStatusDocumentProcessing(
             return;
         }
 
-        let registerResponseJson: any;
+        let registerResponse: any;
         try {
-            registerResponseJson = await lsdRegister_(lcp.LSD, deviceIDManager);
+            registerResponse = await lsdRegister_(lcp.LSD, deviceIDManager);
         } catch (err) {
             debug(err);
         }
-        if (registerResponseJson) {
-            try {
-                lcp.LSD = TAJSON.deserialize<LSD>(registerResponseJson, LSD);
-                if (IS_DEV) {
-                    debug(lcp.LSD);
-                }
-            } catch (err) {
-                debug(err);
+        if (registerResponse) {
+            lcp.LSD = registerResponse;
+            if (IS_DEV) {
+                debug(lcp.LSD);
             }
         }
         if (onStatusDocumentProcessingComplete) {
