@@ -6,6 +6,24 @@ Git diff:
 Changes:
 * TODO
 
+# 1.0.18
+
+> Build environment: NodeJS `12.13.0`, NPM `6.13.0`
+
+Changes:
+* NPM package updates
+* Fixed LSD renew date in URI (ISO syntax)
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.18/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.18/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.18
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.17...v1.0.18
+
 # 1.0.17
 
 > Build environment: NodeJS `12.13.0`, NPM `6.12.1`
