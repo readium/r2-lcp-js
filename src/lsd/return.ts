@@ -76,10 +76,11 @@ export async function lsdReturn_(
         return Promise.reject("Problem getting Device NAME !?");
     }
 
-    let returnURL = licenseReturn.Href;
+    let returnURL: string = licenseReturn.Href;
     if (licenseReturn.Templated) {
         const urlTemplate = new URITemplate(returnURL);
-        returnURL = (urlTemplate as any).expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        const uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        returnURL = uri1.toString();
 
         // url = url.replace("{?end,id,name}", ""); // TODO: smarter regexp?
         // url = new URI(url).setQuery("id", deviceID).setQuery("name", deviceNAME).toString();

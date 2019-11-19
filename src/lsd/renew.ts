@@ -79,17 +79,18 @@ export async function lsdRenew_(
         return Promise.reject("Problem getting Device NAME !?");
     }
 
-    let renewURL = licenseRenew.Href;
+    let renewURL: string = licenseRenew.Href;
     if (licenseRenew.Templated) {
         const urlTemplate = new URITemplate(renewURL);
-        renewURL = (urlTemplate as any).expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
+        const uri1: uri.URI = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
+        renewURL = uri1.toString();
 
-        const renewURI = new URI(renewURL);
-        renewURI.search((data: any) => {
+        const uri2 = new URI(renewURL); // URIjs necessary for .search() to work
+        uri2.search((data: any) => {
             // overrides existing (leaves others intact)
-            data.end = end; // can be undefined
+            data.end = end?.toISOString(); // can be undefined
         });
-        renewURL = renewURI.toString();
+        renewURL = uri2.toString();
 
         // url = url.replace("{?end,id,name}", ""); // TODO: smarter regexp?
         // url = new URI(url).setQuery("id", deviceID).setQuery("name", deviceNAME).toString();

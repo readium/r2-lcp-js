@@ -106,10 +106,11 @@ export async function lsdRegister_(
         return Promise.reject("No need to LSD register.");
     }
 
-    let registerURL = licenseRegister.Href;
+    let registerURL: string = licenseRegister.Href;
     if (licenseRegister.Templated) {
         const urlTemplate = new URITemplate(registerURL);
-        registerURL = (urlTemplate as any).expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        const uri1 = urlTemplate.expand({ id: deviceID, name: deviceNAME }, { strict: true });
+        registerURL = uri1.toString();
 
         // url = url.replace("{?id,name}", ""); // TODO: smarter regexp?
         // url = new URI(url).setQuery("id", deviceID).setQuery("name", deviceNAME).toString();
