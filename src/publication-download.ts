@@ -10,12 +10,12 @@ import * as fs from "fs";
 import * as path from "path";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
-import { JSON as TAJSON } from "ta-json-x";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 import { injectFileInZip } from "@r2-utils-js/_utils/zip/zipInjector";
 
 import { LCP } from "./parser/epub/lcp";
+import { TaJsonDeserialize } from "./serializable";
 
 const debug = debug_("r2:lcp#publication-download");
 
@@ -28,7 +28,7 @@ export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFi
         const lcplStr = fs.readFileSync(filePath, { encoding: "utf8" });
         // debug(lcplStr);
         const lcplJson = global.JSON.parse(lcplStr);
-        const lcpl = TAJSON.deserialize<LCP>(lcplJson, LCP);
+        const lcpl = TaJsonDeserialize<LCP>(lcplJson, LCP);
         if (lcpl.Links) {
             const pubLink = lcpl.Links.find((link) => {
                 return link.Rel === "publication";

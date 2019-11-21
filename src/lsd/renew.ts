@@ -8,11 +8,11 @@
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
-import { JSON as TAJSON } from "ta-json-x";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
 import { LSD } from "../parser/epub/lsd";
+import { TaJsonDeserialize, TaJsonSerialize } from "../serializable";
 import { IDeviceIDManager } from "./deviceid-manager";
 
 import URI = require("urijs");
@@ -33,7 +33,7 @@ export async function lsdRenew(
 
     let lsd: LSD | undefined;
     try {
-        lsd = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+        lsd = TaJsonDeserialize<LSD>(lsdJSON, LSD);
     } catch (err) {
         debug(err);
         debug(lsdJSON);
@@ -41,7 +41,7 @@ export async function lsdRenew(
     }
 
     const obj = lsdRenew_(end, lsd, deviceIDManager);
-    return TAJSON.serialize(obj);
+    return TaJsonSerialize(obj);
 }
 
 export async function lsdRenew_(
@@ -168,7 +168,7 @@ export async function lsdRenew_(
             }
 
             try {
-                const newLsd = TAJSON.deserialize<LSD>(responseJson, LSD);
+                const newLsd = TaJsonDeserialize<LSD>(responseJson, LSD);
                 if (IS_DEV) {
                     debug(newLsd);
                 }

@@ -8,12 +8,12 @@
 import * as debug_ from "debug";
 import * as request from "request";
 import * as requestPromise from "request-promise-native";
-import { JSON as TAJSON } from "ta-json-x";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
 import { LCP } from "../parser/epub/lcp";
 import { LSD, StatusEnum } from "../parser/epub/lsd";
+import { TaJsonDeserialize } from "../serializable";
 import { IDeviceIDManager } from "./deviceid-manager";
 import { lsdLcpUpdate } from "./lcpl-update";
 import { lsdRegister_ } from "./register";
@@ -129,7 +129,7 @@ export async function launchStatusDocumentProcessing(
         }
 
         try {
-            lcp.LSD = TAJSON.deserialize<LSD>(lsdJSON, LSD);
+            lcp.LSD = TaJsonDeserialize<LSD>(lsdJSON, LSD);
             if (IS_DEV) {
                 debug(lcp.LSD);
             }
