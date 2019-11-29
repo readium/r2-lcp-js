@@ -288,7 +288,10 @@ export class LCP {
                                 //     },
                                 // );
 
-                                resolve();
+                                setTimeout(async () => {
+                                    await this.decryptLicenseFields();
+                                    resolve();
+                                }, 0);
                             },
                         );
                     },
@@ -299,6 +302,8 @@ export class LCP {
         for (const lcpUserKey of lcpUserKeys) {
             try {
                 if (this.tryUserKey(lcpUserKey)) {
+                    // TODO: support for non-(native LCP plugin) decrypt
+                    // await this.decryptLicenseFields();
                     return Promise.resolve();
                 }
             } catch (err) {
@@ -309,6 +314,77 @@ export class LCP {
         return Promise.reject(1); // "Pass fail."
     }
 
+    private async decryptLicenseField(
+        base64Str: string,
+        keyJson: string,
+        encrypteds: string[],
+        keyObj: string,
+        obj: any) {
+
+        try {
+            debug("decryptLicenseField");
+            debug(base64Str);
+            const buff = Buffer.from(base64Str, "base64");
+            debug(buff);
+            const res = await this.decrypt(buff, keyJson, false);
+            debug(res.buffer);
+            const decrypted = res.buffer.toString("utf8");
+            debug(decrypted);
+            obj[keyObj] = decrypted;
+            encrypteds.splice(encrypteds.indexOf(keyJson), 1);
+            debug(`${keyJson} => ${decrypted}`);
+            debug(encrypteds);
+        } catch (err) {
+            debug(err);
+        }
+    }
+    private async decryptLicenseFields() {
+
+        if (!this.User || !this.User.Encrypted) {
+            return;
+        }
+        debug("decryptLicenseFields");
+        debug(this.User.Encrypted);
+        const encrypteds = this.User.Encrypted.map((encrypted) => {
+            return encrypted;
+        });
+        debug(encrypteds);
+        for (const key of encrypteds) {
+            try {
+                switch (key) {
+                    case "name": {
+                        if (!this.User.Name) {
+                            continue;
+                        }
+                        const base64Str = this.User.Name;
+
+                        debug("-----");
+                        await this.decryptLicenseField(base64Str, key, this.User.Encrypted, "Name", this.User);
+                        debug("-----");
+                        debug(this.User.Name);
+                        debug(this.User.Encrypted);
+                        break;
+                    }
+                    case "email": {
+                        if (!this.User.Email) {
+                            continue;
+                        }
+                        const base64Str = this.User.Email;
+
+                        debug("-----");
+                        await this.decryptLicenseField(base64Str, key, this.User.Encrypted, "Email", this.User);
+                        debug("-----");
+                        debug(this.User.Email);
+                        debug(this.User.Encrypted);
+                        break;
+                    }
+                }
+            } catch (err) {
+                debug(err);
+                debug(key);
+            }
+        }
+    }
     private async getCRLPem(): Promise<string> {
 
         return new Promise<any>(async (resolve, reject) => {
