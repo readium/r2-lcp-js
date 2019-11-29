@@ -23,7 +23,8 @@ const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV =
 
 export async function lsdReturn(
     lsdJSON: any,
-    deviceIDManager: IDeviceIDManager): Promise<any> {
+    deviceIDManager: IDeviceIDManager,
+    httpHeaders?: { [key: string]: string; }): Promise<any> {
 
     if (lsdJSON instanceof LSD) {
         return lsdReturn_(lsdJSON as LSD, deviceIDManager);
@@ -38,13 +39,14 @@ export async function lsdReturn(
         return Promise.reject("Bad LSD JSON?");
     }
 
-    const obj = lsdReturn_(lsd, deviceIDManager);
+    const obj = lsdReturn_(lsd, deviceIDManager, httpHeaders);
     return TaJsonSerialize(obj);
 }
 
 export async function lsdReturn_(
     lsd: LSD,
-    deviceIDManager: IDeviceIDManager): Promise<LSD> {
+    deviceIDManager: IDeviceIDManager,
+    httpHeaders?: { [key: string]: string; }): Promise<LSD> {
 
     if (!lsd) {
         return Promise.reject("LCP LSD data is missing.");
@@ -169,10 +171,11 @@ export async function lsdReturn_(
             }
         };
 
-        const headers = {
+        const headers = Object.assign({
             "Accept": "application/json,application/xml",
             "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-        };
+            "User-Agent": "Readium2-LCP",
+        }, httpHeaders ? httpHeaders : {});
 
         // No response streaming! :(
         // https://github.com/request/request-promise/issues/90

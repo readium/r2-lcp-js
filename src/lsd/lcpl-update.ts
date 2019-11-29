@@ -20,7 +20,9 @@ const debug = debug_("r2:lcp#lsd/lcpl-update");
 
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
-export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
+export async function lsdLcpUpdate(
+    lcp: LCP,
+    httpHeaders?: { [key: string]: string; }): Promise<string> {
 
     if (!lcp.LSD) {
         return Promise.reject("LCP LSD data is missing.");
@@ -161,10 +163,11 @@ export async function lsdLcpUpdate(lcp: LCP): Promise<string> {
                         resolve(lcplStr);
                     };
 
-                    const headers = {
+                    const headers = Object.assign({
                         "Accept": "application/json,application/xml",
                         "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
-                    };
+                        "User-Agent": "Readium2-LCP",
+                    }, httpHeaders ? httpHeaders : {});
 
                     // No response streaming! :(
                     // https://github.com/request/request-promise/issues/90
