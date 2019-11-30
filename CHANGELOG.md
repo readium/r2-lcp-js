@@ -6,6 +6,23 @@ Git diff:
 Changes:
 * TODO
 
+# 1.0.23
+
+> Build environment: NodeJS `12.13.0`, NPM `6.13.0`
+
+Changes:
+* Dummy create context function to test certificate revoke etc. before actually trying passphrases
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.23/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.23/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.23
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.22...v1.0.23
+
 # 1.0.22
 
 > Build environment: NodeJS `12.13.0`, NPM `6.13.0`
