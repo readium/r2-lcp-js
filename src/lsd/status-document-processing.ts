@@ -173,7 +173,7 @@ export async function launchStatusDocumentProcessing(
 
         let licenseUpdateResponseJson: string | undefined;
         try {
-            licenseUpdateResponseJson = await lsdLcpUpdate(lcp);
+            licenseUpdateResponseJson = await lsdLcpUpdate(lcp, httpHeaders);
         } catch (err) {
             debug(err);
             // if (onStatusDocumentProcessingComplete) {
