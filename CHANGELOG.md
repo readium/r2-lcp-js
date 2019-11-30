@@ -1,10 +1,27 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.21...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.22...develop
 
 Changes:
 * TODO
+
+# 1.0.22
+
+> Build environment: NodeJS `12.13.0`, NPM `6.13.0`
+
+Changes:
+* Hotfix for previous release: function argument was missing to propagate optional LCP/LSD HTTP headers overrides
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.22/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.22/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.22
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.21...v1.0.22
 
 # 1.0.21
 

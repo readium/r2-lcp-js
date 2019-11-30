@@ -206,7 +206,7 @@ export async function launchStatusDocumentProcessing(
 
         let registerResponse: any;
         try {
-            registerResponse = await lsdRegister_(lcp.LSD, deviceIDManager);
+            registerResponse = await lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
         } catch (err) {
             debug(err);
         }
