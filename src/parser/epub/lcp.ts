@@ -207,6 +207,39 @@ export class LCP {
         });
     }
 
+    public async dummyCreateContext() {
+        this.init();
+
+        if (this._usesNativeNodePlugin) {
+            const crlPem = await this.getCRLPem();
+
+            // always generates USER_KEY_CHECK_INVALID = 141
+            const sha256DummyPassphrase = "0".repeat(64);
+
+            return new Promise((resolve, reject) => {
+
+                this._lcpNative.createContext(
+                    this.JsonSource,
+                    sha256DummyPassphrase,
+                    crlPem,
+                    (erro: any, _context: any) => {
+                        if (erro) {
+                            debug("dummyCreateContext ERROR");
+                            debug(erro);
+                            reject(erro);
+                            return;
+                        }
+
+                        // should never happen, as the userkey is fake (USER_KEY_CHECK_INVALID = 141)
+                        resolve();
+                    },
+                );
+            });
+        }
+
+        return Promise.resolve();
+    }
+
     public async tryUserKeys(lcpUserKeys: string[]) {
         this.init();
 
@@ -306,7 +339,7 @@ export class LCP {
                 // ignore
             }
         }
-        return Promise.reject(1); // "Pass fail."
+        return Promise.reject(1); // "Passphrase fail."
     }
 
     private async getCRLPem(): Promise<string> {
