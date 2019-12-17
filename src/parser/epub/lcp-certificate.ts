@@ -9,9 +9,11 @@
 
 // Certificate Revocation List (CRL)
 export const CRL_URL = "http://crl.edrlab.telesec.de/rl/EDRLab_CA.crl";
+// curl http://crl.edrlab.telesec.de/rl/EDRLab_CA.crl -s | openssl crl -inform DER -text -noout
 
 // Authority Revocation List (ARL)
 export const CRL_URL_ALT = "http://crl.edrlab.telesec.de/rl/Readium_LCP_Root_CA.crl";
+// curl http://crl.edrlab.telesec.de/rl/Readium_LCP_Root_CA.crl -s | openssl crl -inform DER -text -noout
 
 export const DUMMY_CRL = `-----BEGIN X509 CRL-----
 MIICrTCBljANBgkqhkiG9w0BAQQFADBnMQswCQYDVQQGEwJGUjEOMAwGA1UEBxMF
