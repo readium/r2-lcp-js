@@ -34,9 +34,20 @@ export class Encrypted {
     public Compression!: string;
 
     // tslint:disable-next-line:max-line-length
-    // https://github.com/readium/webpub-manifest/blob/917c83e798e3eda42b3e9d0dc92f0fef31b16211/schema/extensions/epub/properties.schema.json#L69
+    // https://github.com/readium/webpub-manifest/blob/7f3ccaa1604fa956fb89a16da4fe8ea730c11f9a/schema/extensions/epub/properties.schema.json#L49
+    @JsonProperty("originalLength")
+    public OriginalLength2!: number;
     @JsonProperty("original-length")
-    public OriginalLength!: number;
+    public OriginalLength1!: number | undefined;
+    get OriginalLength(): number | undefined {
+        return typeof this.OriginalLength2 !== "undefined" ? this.OriginalLength2 : this.OriginalLength1;
+    }
+    set OriginalLength(length: number | undefined) {
+        if (typeof length !== "undefined") {
+            this.OriginalLength1 = undefined;
+            this.OriginalLength2 = length;
+        }
+    }
 
     public DecryptedLengthBeforeInflate: number = -1;
     public CypherBlockPadding: number = -1;
