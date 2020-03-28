@@ -1,6 +1,6 @@
 {
   "name": "r2-lcp-js",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "Readium 2 LCP bits for NodeJS (TypeScript)",
   "keywords": [
     "readium",
@@ -49,31 +49,31 @@
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
     "moment": "^2.24.0",
-    "r2-utils-js": "^1.0.18",
+    "r2-utils-js": "^1.0.19",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
     "ta-json-x": "^2.5.2",
-    "tslib": "^1.10.0",
+    "tslib": "^1.11.1",
     "urijs": "^1.19.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
-    "@types/node": "^12.12.27",
+    "@types/node": "^12.12.32",
     "@types/request": "^2.48.4",
     "@types/request-promise-native": "^1.0.17",
-    "@types/urijs": "^1.19.5",
-    "cpy-cli": "^3.0.0",
-    "cross-env": "^7.0.0",
-    "cson": "^6.9.0",
+    "@types/urijs": "^1.19.7",
+    "cpy-cli": "^3.1.0",
+    "cross-env": "^7.0.2",
+    "cson": "^7.0.0",
     "eclint": "^2.8.1",
-    "filehound": "^1.17.3",
+    "filehound": "^1.17.4",
     "git-rev-sync": "^2.0.0",
     "json": "^9.0.6",
     "mkdirp": "^1.0.3",
     "rimraf": "^3.0.2",
     "tslint": "^5.20.1",
     "tslint-language-service": "^0.9.9",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   },
   "files": [
     "LICENSE",

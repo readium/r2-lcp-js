@@ -84,7 +84,7 @@ export async function lsdRenew_(
     let renewURL: string = licenseRenew.Href;
     if (licenseRenew.Templated) {
         const urlTemplate = new URITemplate(renewURL);
-        const uri1: uri.URI = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
+        const uri1 = urlTemplate.expand({ end: "xxx", id: deviceID, name: deviceNAME }, { strict: false });
         renewURL = uri1.toString();
 
         const uri2 = new URI(renewURL); // URIjs necessary for .search() to work
