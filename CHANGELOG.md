@@ -1,10 +1,30 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.25...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.26...develop
 
 Changes:
 * TODO
+
+# 1.0.26
+
+> Build environment: NodeJS `12.16.1`, NPM `6.14.4`
+
+Changes:
+* NPM package updates
+* Fixed CSON-2-JSON script
+* LCP transformer support() predicate fallback to simply the Algorithm field of link.Properties.Encryption (discriminator with IDPF and Adobe obfuscation)
+* Download of encrypted publication from LCP license, and subsequent injection of META-INF/license.lcpl (for EPUBs) now works for audiobooks too
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.26/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.26/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.26
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.25...v1.0.26
 
 # 1.0.25
 
