@@ -88,7 +88,8 @@ export async function lsdRenew_(
         renewURL = uri1.toString();
 
         const uri2 = new URI(renewURL); // URIjs necessary for .search() to work
-        uri2.search((data: any) => {
+        // TODO: urijs types broke this! (lib remains unchanged)
+        (uri2 as any).search((data: any) => {
             // overrides existing (leaves others intact)
             data.end = end?.toISOString(); // can be undefined
         });
