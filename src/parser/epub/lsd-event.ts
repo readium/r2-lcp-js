@@ -8,7 +8,7 @@
 // https://github.com/edcarroll/ta-json
 import { JsonObject, JsonProperty } from "ta-json-x";
 
-export const enum TypeEnum {
+export enum TypeEnum {
     Register = "register",
     Renew = "renew",
     Return = "return",

@@ -13,7 +13,7 @@ import { LsdEvent } from "./lsd-event";
 import { PotentialRights } from "./lsd-potential-rights";
 import { Updated } from "./lsd-updated";
 
-export const enum StatusEnum {
+export enum StatusEnum {
     Ready = "ready",
     Active = "active",
     Revoked = "revoked",
