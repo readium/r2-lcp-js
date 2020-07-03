@@ -1,6 +1,6 @@
 {
   "name": "r2-lcp-js",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "Readium 2 LCP bits for NodeJS (TypeScript)",
   "keywords": [
     "readium",
@@ -49,7 +49,7 @@
     "bindings": "^1.5.0",
     "debug": "^4.1.1",
     "moment": "^2.27.0",
-    "r2-utils-js": "^1.0.22",
+    "r2-utils-js": "^1.0.23",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
     "ta-json-x": "^2.5.2",
