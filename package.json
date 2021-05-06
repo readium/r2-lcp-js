@@ -68,7 +68,7 @@
     "eclint": "^2.8.1",
     "filehound": "^1.17.4",
     "git-rev-sync": "^2.0.0",
-    "json": "^9.0.6",
+    "json": "^10.0.0",
     "mkdirp": "^1.0.4",
     "rimraf": "^3.0.2",
     "tslint": "^5.20.1",
