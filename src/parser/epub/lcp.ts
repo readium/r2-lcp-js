@@ -216,7 +216,7 @@ export class LCP {
             // always generates USER_KEY_CHECK_INVALID = 141
             const sha256DummyPassphrase = "0".repeat(64);
 
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
 
                 this._lcpNative.createContext(
                     this.JsonSource,
@@ -261,7 +261,7 @@ export class LCP {
 
             const crlPem = await this.getCRLPem();
 
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
 
                 this._lcpNative.findOneValidPassphrase(
                     this.JsonSource,
