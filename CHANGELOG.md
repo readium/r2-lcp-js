@@ -1,7 +1,7 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.30...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.31...develop
 
 Changes:
 * TODO
