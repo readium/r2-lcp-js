@@ -6,6 +6,23 @@ Git diff:
 Changes:
 * TODO
 
+# 1.0.31
+
+> Build environment: NodeJS `14.17.5`, NPM `6.14.14`
+
+Changes:
+* NPM package updates
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.31/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.31/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.31
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.30...v1.0.31
+
 # 1.0.30
 
 > Build environment: NodeJS `14.16.1`, NPM `6.14.13`
