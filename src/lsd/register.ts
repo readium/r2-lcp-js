@@ -223,6 +223,7 @@ export async function lsdRegister_(
             request.post({
                 headers,
                 method: "POST",
+                timeout: 2000,
                 uri: registerURL,
             })
                 .on("response", success)

@@ -234,6 +234,7 @@ export async function launchStatusDocumentProcessing(
         request.get({
             headers,
             method: "GET",
+            timeout: 2000,
             uri: linkStatus.Href,
         })
             .on("response", success)

@@ -195,6 +195,7 @@ export async function lsdRenew_(
             request.put({
                 headers,
                 method: "PUT",
+                timeout: 5000,
                 uri: renewURL,
             })
                 .on("response", success)

@@ -125,6 +125,7 @@ export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFi
                     request.get({
                         headers: {},
                         method: "GET",
+                        timeout: 5000,
                         uri: pubLink.Href,
                     })
                         .on("response", success)

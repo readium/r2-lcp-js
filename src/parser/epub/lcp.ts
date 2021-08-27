@@ -530,6 +530,7 @@ export class LCP {
                 request.get({
                     headers,
                     method: "GET",
+                    timeout: 2000,
                     uri: crlURL,
                 })
                     .on("response", success)

@@ -176,6 +176,7 @@ export async function lsdLcpUpdate(
                         request.get({
                             headers,
                             method: "GET",
+                            timeout: 2000,
                             uri: licenseLink.Href,
                         })
                             .on("response", success)
