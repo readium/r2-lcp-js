@@ -1,10 +1,27 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.33...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.34...develop
 
 Changes:
 * TODO
+
+# 1.0.34
+
+> Build environment: NodeJS `16.13.1`, NPM `8.3.0`
+
+Changes:
+* NPM package updates and migration from TSLINT to ESLINT
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.34/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.34/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.34
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.33...v1.0.34
 
 # 1.0.33
 
