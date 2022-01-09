@@ -56,8 +56,10 @@ export async function lsdLcpUpdate(
                     debug("OLD LCP LICENSE, FETCHING LSD UPDATE ... " + licenseLink.Href);
                 }
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return new Promise<any>(async (resolve, reject) => {
 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const failure = (err: any) => {
                         reject(err);
                     };

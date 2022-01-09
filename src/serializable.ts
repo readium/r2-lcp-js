@@ -16,6 +16,7 @@ export type JsonPrimitives = string | number | boolean | null;
 export interface JsonMap {
     [key: string]: AnyJson;
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JsonArray extends Array<AnyJson> {
 }
 
@@ -63,6 +64,7 @@ export interface IWithAdditionalJSON {
 //     }
 // }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TConstructor<T> = new(value?: any) => T;
 // type TFunction<T> = ObjectConstructor["constructor"] & TConstructor<T>;
 
@@ -91,6 +93,7 @@ type TConstructor<T> = new(value?: any) => T;
 //     return json;
 // }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function TaJsonDeserialize<T>(json: any, type: TConstructor<T>): T {
     return TAJSON.deserialize<T>(json, type, { keyToPreserveUnknownJSON: KeyToPreserveUnknownJSON });
 }

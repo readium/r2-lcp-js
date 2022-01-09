@@ -166,9 +166,7 @@ export async function transformStream(
             isCompressionNone &&
             linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
 
-            debug(`############### ` +
-                `LCP transformStream() LENGTH NOT MATCH ` +
-                `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+            debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                 `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
         }
 
@@ -211,9 +209,7 @@ export async function transformStream(
                 isCompressionNone &&
                 linkPropertiesEncrypted.OriginalLength !== plainTextSize) {
 
-                debug(`############### ` +
-                    `LCP transformStream() LENGTH NOT MATCH ` +
-                    `linkPropertiesEncrypted.OriginalLength !== plainTextSize: ` +
+                debug("############### LCP transformStream() LENGTH NOT MATCH linkPropertiesEncrypted.OriginalLength !== plainTextSize: " +
                     `${linkPropertiesEncrypted.OriginalLength} !== ${plainTextSize}`);
             }
         }
@@ -356,7 +352,7 @@ export async function transformStream(
         destStream = inflateStream;
 
         if (!linkPropertiesEncrypted.OriginalLength) {
-            debug(`############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!`);
+            debug("############### RESOURCE ENCRYPTED OVER DEFLATE, BUT NO OriginalLength!");
 
             let fullDeflatedBuffer: Buffer;
             try {

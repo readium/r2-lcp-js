@@ -49,7 +49,7 @@ export class Encrypted {
         }
     }
 
-    public DecryptedLengthBeforeInflate: number = -1;
-    public CypherBlockPadding: number = -1;
+    public DecryptedLengthBeforeInflate = -1;
+    public CypherBlockPadding = -1;
     public CypherBlockIV: string | undefined; // Buffer | undefined;
 }

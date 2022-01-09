@@ -43,6 +43,7 @@ export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFi
                 const destPathTMP = path.join(dir, destFileName + ".tmp");
                 const destPathFINAL = path.join(dir, destFileName + ext);
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const failure = (err: any) => {
                     debug(err);
                     reject(pubLink.Href + " (" + err + ")");
@@ -99,6 +100,7 @@ export async function downloadEPUBFromLCPL(filePath: string, dir: string, destFi
                     // });
                     destStreamTMP.on("finish", () => {
 
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const zipError = (err: any) => {
                             debug(err);
                             reject(destPathTMP + " (" + err + ")");

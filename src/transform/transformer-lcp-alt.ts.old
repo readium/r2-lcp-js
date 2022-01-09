@@ -157,6 +157,7 @@ export class TransformerLCPAlt extends TransformerLCP {
 
         const TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: TS2345 strictFunctionTypes
         const decryptStream = new Transform({
             flush(callback: () => void): void {

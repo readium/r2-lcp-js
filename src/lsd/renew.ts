@@ -24,8 +24,10 @@ const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV =
 
 export async function lsdRenew(
     end: Date | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lsdJSON: any,
     deviceIDManager: IDeviceIDManager,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     httpHeaders?: { [key: string]: string; }): Promise<any> {
 
     if (lsdJSON instanceof LSD) {
@@ -89,6 +91,7 @@ export async function lsdRenew_(
 
         const uri2 = new URI(renewURL); // URIjs necessary for .search() to work
         // TODO: urijs types broke this! (lib remains unchanged)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (uri2 as any).search((data: any) => {
             // overrides existing (leaves others intact)
             data.end = end?.toISOString(); // can be undefined
@@ -104,6 +107,7 @@ export async function lsdRenew_(
 
     return new Promise<LSD>(async (resolve, reject) => {
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const failure = (err: any) => {
             reject(err);
         };

@@ -108,7 +108,9 @@ export class LCP {
 
     // Native impl
     private _usesNativeNodePlugin: boolean | undefined = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _lcpNative: any | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private _lcpContext: any | undefined;
 
     public isNativeNodePlugin(): boolean {
@@ -178,6 +180,7 @@ export class LCP {
             this._lcpNative.decrypt(
                 this._lcpContext,
                 encryptedContent,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (er: any, decryptedContent: any, inflated: boolean) => {
                     if (er) {
                         debug("decrypt ERROR");
@@ -222,6 +225,7 @@ export class LCP {
                     this.JsonSource,
                     sha256DummyPassphrase,
                     crlPem,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (erro: any, _context: any) => {
                         if (erro) {
                             debug("dummyCreateContext ERROR");
@@ -266,6 +270,7 @@ export class LCP {
                 this._lcpNative.findOneValidPassphrase(
                     this.JsonSource,
                     lcpUserKeys,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (err: any, validHashedPassphrase: any) => {
                         if (err) {
                             debug("findOneValidPassphrase ERROR");
@@ -279,6 +284,7 @@ export class LCP {
                             this.JsonSource,
                             validHashedPassphrase,
                             crlPem,
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             (erro: any, context: any) => {
                                 if (erro) {
                                     debug("createContext ERROR");
@@ -334,7 +340,7 @@ export class LCP {
                 if (this.tryUserKey(lcpUserKey)) {
                     return Promise.resolve();
                 }
-            } catch (err) {
+            } catch (_err) {
                 // debug(err);
                 // ignore
             }
@@ -344,6 +350,7 @@ export class LCP {
 
     private async getCRLPem(): Promise<string> {
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Promise<any>(async (resolve, reject) => {
 
             const crlURL = CRL_URL;
@@ -450,6 +457,7 @@ export class LCP {
                 // const certificate = new Certificate({ schema: asn1.result });
                 // debug(certificate);
             // }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const failure = (err: any) => {
                 // reject(err);
                 debug(err);

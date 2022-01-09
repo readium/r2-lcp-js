@@ -21,8 +21,10 @@ const debug = debug_("r2:lcp#lsd/register");
 const IS_DEV = (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "dev");
 
 export async function lsdRegister(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lsdJSON: any,
     deviceIDManager: IDeviceIDManager,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     httpHeaders?: { [key: string]: string; }): Promise<any> {
 
     if (lsdJSON instanceof LSD) {
@@ -121,6 +123,7 @@ export async function lsdRegister_(
     }
 
     return new Promise<LSD>(async (resolve, reject) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const failure = (err: any) => {
             reject(err);
         };

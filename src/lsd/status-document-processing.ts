@@ -48,6 +48,7 @@ export async function launchStatusDocumentProcessing(
         debug(linkStatus);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const failure = (err: any) => {
         debug(err);
         if (onStatusDocumentProcessingComplete) {
@@ -204,6 +205,7 @@ export async function launchStatusDocumentProcessing(
             return;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let registerResponse: any;
         try {
             registerResponse = await lsdRegister_(lcp.LSD, deviceIDManager, httpHeaders);
