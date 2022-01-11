@@ -229,7 +229,15 @@ export async function lsdRegister_(
                 timeout: 2000,
                 uri: registerURL,
             })
-                .on("response", success)
+                .on("response", async (res) => {
+                    try {
+                        await success(res);
+                    }
+                    catch (successError) {
+                        failure(successError);
+                        return;
+                    }
+                })
                 .on("error", failure);
         } else {
             let response: requestPromise.FullResponse;
