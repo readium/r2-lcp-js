@@ -1,10 +1,28 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.34...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.35...develop
 
 Changes:
 * TODO
+
+# 1.0.35
+
+> Build environment: NodeJS `16.13.1`, NPM `8.3.0`
+
+Changes:
+* NPM package updates
+* safeguard against callbacks that do not capture async / await thrown errors (exceptions do not automatically transit up the call chain) avoids UnhandledPromiseRejectionWarning
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.35/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.35/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.35
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.34...v1.0.35
 
 # 1.0.34
 
