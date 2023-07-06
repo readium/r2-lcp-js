@@ -1,10 +1,27 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.37...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.38...develop
 
 Changes:
 * TODO
+
+# 1.0.38
+
+> Build environment: NodeJS `18.16.0`, NPM `9.8.0`
+
+Changes:
+* NPM package updates
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.38/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.38/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.38
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.37...v1.0.38
 
 # 1.0.37
 
