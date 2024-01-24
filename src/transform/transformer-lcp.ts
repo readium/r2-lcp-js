@@ -74,7 +74,9 @@ export function supports(
     const check = (linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
 
         && (linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile" ||
-        linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0")
+        linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0" ||
+        (linkPropertiesEncrypted.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(linkPropertiesEncrypted.Profile))
+        )
 
         && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc")
 
@@ -90,7 +92,9 @@ export function supports(
         (linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc" &&
         // ... and then we just check the supported LCP profiles (basic or 1.0)
         (lcp.Encryption.Profile === "http://readium.org/lcp/basic-profile" ||
-        lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0"))
+        lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ||
+        (lcp.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(lcp.Encryption.Profile))
+        )
         // Note: ultimately, it may be better to remove the profile URI checks altogether,
         // as we cannot programmatically check whether the NodeJS native LCP library supports them anyway
         // (we just assume it does, so the basic/1.0 restriction seems artificial here).
