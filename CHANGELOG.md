@@ -1,10 +1,27 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.39...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.40...develop
 
 Changes:
 * TODO
+
+# 1.0.40
+
+> Build environment: NodeJS `20.12.2`, NPM `10.7.0`
+
+Changes:
+* Fixed crash bug introduced by LCP2.x code, affected only LCP2 publications with non-encrypted resources (including obfuscated fonts) consumed by HTML documents during rendering (fetching). Did not affect non-encrypted cover image or navigation document which are not consumed by publication HTML documents (they do not pass through the streamer transformers)
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.40/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.40/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.40
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.39...v1.0.40
 
 # 1.0.39
 
