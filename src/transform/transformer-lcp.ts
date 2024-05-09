@@ -65,39 +65,50 @@ export function supports(
     if (!lcp) {
         return false;
     }
+    if (!linkPropertiesEncrypted) {
+        return false;
+    }
 
     if (!lcp.isReady()) {
         debug("LCP not ready!");
         return false;
     }
 
-    const check = (linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
-
-        && (linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile" ||
-        linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0" ||
-        (linkPropertiesEncrypted.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(linkPropertiesEncrypted.Profile))
-        )
-
-        && linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc")
+    // TODO: check that the native lib supports the LCP profiles (basic or 1.0 or 2.x)
+    // getListOfSupportedProfileURIs()
+    const check =
+        linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+        &&
+        (
+            (
+            linkPropertiesEncrypted.Scheme === "http://readium.org/2014/01/lcp"
+            &&
+            (
+            linkPropertiesEncrypted.Profile === "http://readium.org/lcp/basic-profile"
+            ||
+            linkPropertiesEncrypted.Profile === "http://readium.org/lcp/profile-1.0"
+            ||
+            (linkPropertiesEncrypted.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(linkPropertiesEncrypted.Profile))
+            )
+            )
 
         ||
-        // the above test is an exact match for each information field,
-        // but this is very verbose and unnecessarily repetitive in manifest.json
-        // so a future version of "Readium Web Pub Manifest" might not provide all these fields.
-        // ... so, below is a simpler test based on the fact that:
-        // linkPropertiesEncrypted indicates that the resource is encrypted,
-        // but it could be non-LCP obfuscation (e.g. IDPF or Adobe URIs),
-        // so we must check at least the Algo URI
-        // (effectively, we assume that AES-256-CBC is not used for anything other than LCP in this publication)
-        (linkPropertiesEncrypted.Algorithm === "http://www.w3.org/2001/04/xmlenc#aes256-cbc" &&
-        // ... and then we just check the supported LCP profiles (basic or 1.0)
-        (lcp.Encryption.Profile === "http://readium.org/lcp/basic-profile" ||
-        lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0") ||
-        (lcp.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(lcp.Encryption.Profile))
+
+            // the above test is an exact match for each information field in manifest.json,
+            // but this is very verbose and unnecessarily repetitive in "Readium Web Pub Manifest"
+            // so a future version of RWPM might not provide all these fields.
+            // Below is a simpler test based on the fact that:
+            // linkPropertiesEncrypted indicates that the resource is encrypted with AES-256-CBC,
+            // but it could be non-LCP obfuscation (e.g. IDPF or Adobe URIs) or a non-LCP DRM,
+            // so we must check the supported LCP profiles (basic or 1.0 or 2.x)
+            (
+            lcp.Encryption.Profile === "http://readium.org/lcp/basic-profile"
+            ||
+            lcp.Encryption.Profile === "http://readium.org/lcp/profile-1.0"
+            ||
+            (lcp.Encryption.Profile && /^http:\/\/readium\.org\/lcp\/profile-2\.[0-9]$/.test(lcp.Encryption.Profile))
+            )
         )
-        // Note: ultimately, it may be better to remove the profile URI checks altogether,
-        // as we cannot programmatically check whether the NodeJS native LCP library supports them anyway
-        // (we just assume it does, so the basic/1.0 restriction seems artificial here).
     ;
 
     if (!check) {
@@ -106,6 +117,7 @@ export function supports(
         //     debug(linkPropertiesEncrypted.Scheme);
         //     debug(linkPropertiesEncrypted.Profile);
         //     debug(linkPropertiesEncrypted.Algorithm);
+        //     debug(lcp.Encryption.Profile);
         // }
         return false;
     }
