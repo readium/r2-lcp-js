@@ -8,7 +8,7 @@
 import * as debug_ from "debug";
 import * as moment from "moment";
 import * as request from "request";
-import * as requestPromise from "request-promise-native";
+// import * as requestPromise from "request-promise-native";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
@@ -25,6 +25,7 @@ export async function lsdLcpUpdate(
     httpHeaders?: { [key: string]: string; }): Promise<string> {
 
     if (!lcp.LSD) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("LCP LSD data is missing.");
     }
 
@@ -49,6 +50,7 @@ export async function lsdLcpUpdate(
                     return link.Rel === "license";
                 });
                 if (!licenseLink) {
+                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     return Promise.reject("LSD license link is missing.");
                 }
 
@@ -61,6 +63,7 @@ export async function lsdLcpUpdate(
 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const failure = (err: any) => {
+                        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                         reject(err);
                     };
 
@@ -135,6 +138,7 @@ export async function lsdLcpUpdate(
                         try {
                             responseData = await streamToBufferPromise(response);
                         } catch (err) {
+                            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                             reject(err);
                             return;
                         }
@@ -171,10 +175,10 @@ export async function lsdLcpUpdate(
                         "User-Agent": "Readium2-LCP",
                     }, httpHeaders ? httpHeaders : {});
 
-                    // No response streaming! :(
-                    // https://github.com/request/request-promise/issues/90
-                    const needsStreamingResponse = true;
-                    if (needsStreamingResponse) {
+                    // // No response streaming! :(
+                    // // https://github.com/request/request-promise/issues/90
+                    // const needsStreamingResponse = true;
+                    // if (needsStreamingResponse) {
                         request.get({
                             headers,
                             method: "GET",
@@ -191,26 +195,27 @@ export async function lsdLcpUpdate(
                                 }
                             })
                             .on("error", failure);
-                    } else {
-                        let response: requestPromise.FullResponse;
-                        try {
-                            // tslint:disable-next-line:await-promise no-floating-promises
-                            response = await requestPromise({
-                                headers,
-                                method: "GET",
-                                resolveWithFullResponse: true,
-                                uri: licenseLink.Href,
-                            });
-                        } catch (err) {
-                            failure(err);
-                            return;
-                        }
+                    // } else {
+                    //     let response: requestPromise.FullResponse;
+                    //     try {
+                    //         // tslint:disable-next-line:await-promise no-floating-promises
+                    //         response = await requestPromise({
+                    //             headers,
+                    //             method: "GET",
+                    //             resolveWithFullResponse: true,
+                    //             uri: licenseLink.Href,
+                    //         });
+                    //     } catch (err) {
+                    //         failure(err);
+                    //         return;
+                    //     }
 
-                        await success(response);
-                    }
+                    //     await success(response);
+                    // }
                 });
             }
         }
     }
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject("No LSD LCP update.");
 }

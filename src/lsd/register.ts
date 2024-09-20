@@ -7,7 +7,7 @@
 
 import * as debug_ from "debug";
 import * as request from "request";
-import * as requestPromise from "request-promise-native";
+// import * as requestPromise from "request-promise-native";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
@@ -15,6 +15,7 @@ import { LSD, StatusEnum } from "../parser/epub/lsd";
 import { TaJsonDeserialize, TaJsonSerialize } from "../serializable";
 import { IDeviceIDManager } from "./deviceid-manager";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-require-imports
 import URITemplate = require("urijs/src/URITemplate");
 const debug = debug_("r2:lcp#lsd/register");
 
@@ -37,6 +38,7 @@ export async function lsdRegister(
     } catch (err) {
         debug(err);
         debug(lsdJSON);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Bad LSD JSON?");
     }
 
@@ -50,9 +52,11 @@ export async function lsdRegister_(
     httpHeaders?: { [key: string]: string; }): Promise<LSD> {
 
     if (!lsd) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("LCP LSD data is missing.");
     }
     if (!lsd.Links) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("No LSD links!");
     }
 
@@ -60,6 +64,7 @@ export async function lsdRegister_(
         return link.Rel === "register";
     });
     if (!licenseRegister) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("No LSD register link!");
     }
 
@@ -68,6 +73,7 @@ export async function lsdRegister_(
         deviceID = await deviceIDManager.getDeviceID();
     } catch (err) {
         debug(err);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Problem getting Device ID !?");
     }
 
@@ -76,6 +82,7 @@ export async function lsdRegister_(
         deviceNAME = await deviceIDManager.getDeviceNAME();
     } catch (err) {
         debug(err);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Problem getting Device NAME !?");
     }
 
@@ -90,6 +97,7 @@ export async function lsdRegister_(
         } catch (err) {
             debug(err);
             // ignore
+            // // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             // return Promise.reject("xxx");
         }
 
@@ -106,6 +114,7 @@ export async function lsdRegister_(
     }
 
     if (!doRegister) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("No need to LSD register.");
     }
 
@@ -125,6 +134,7 @@ export async function lsdRegister_(
     return new Promise<LSD>(async (resolve, reject) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const failure = (err: any) => {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject(err);
         };
 
@@ -178,6 +188,7 @@ export async function lsdRegister_(
             try {
                 responseData = await streamToBufferPromise(response);
             } catch (err) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(err);
                 return;
             }
@@ -196,6 +207,7 @@ export async function lsdRegister_(
                     await deviceIDManager.recordDeviceID(responseJson.id);
                 } catch (err) {
                     debug(err);
+                    // // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     // reject(err);
                     // return;
                 }
@@ -219,10 +231,10 @@ export async function lsdRegister_(
             "User-Agent": "Readium2-LCP",
         }, httpHeaders ? httpHeaders : {});
 
-        // No response streaming! :(
-        // https://github.com/request/request-promise/issues/90
-        const needsStreamingResponse = true;
-        if (needsStreamingResponse) {
+        // // No response streaming! :(
+        // // https://github.com/request/request-promise/issues/90
+        // const needsStreamingResponse = true;
+        // if (needsStreamingResponse) {
             request.post({
                 headers,
                 method: "POST",
@@ -239,22 +251,22 @@ export async function lsdRegister_(
                     }
                 })
                 .on("error", failure);
-        } else {
-            let response: requestPromise.FullResponse;
-            try {
-                // tslint:disable-next-line:await-promise no-floating-promises
-                response = await requestPromise({
-                    headers,
-                    method: "POST",
-                    resolveWithFullResponse: true,
-                    uri: registerURL,
-                });
-            } catch (err) {
-                failure(err);
-                return;
-            }
+        // } else {
+        //     let response: requestPromise.FullResponse;
+        //     try {
+        //         // tslint:disable-next-line:await-promise no-floating-promises
+        //         response = await requestPromise({
+        //             headers,
+        //             method: "POST",
+        //             resolveWithFullResponse: true,
+        //             uri: registerURL,
+        //         });
+        //     } catch (err) {
+        //         failure(err);
+        //         return;
+        //     }
 
-            await success(response);
-        }
+        //     await success(response);
+        // }
     });
 }

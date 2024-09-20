@@ -152,6 +152,7 @@ export async function transformStream(
             fullEncryptedBuffer = await streamToBufferPromise(stream.stream);
         } catch (err) {
             debug(err);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject("OUCH!");
         }
 
@@ -166,6 +167,7 @@ export async function transformStream(
             res = await lcp.decrypt(fullEncryptedBuffer, linkHref, isCompressionDeflate);
         } catch (err) {
             debug(err);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject("OUCH!");
         }
 
@@ -199,6 +201,7 @@ export async function transformStream(
                 cryptoInfo = await getDecryptedSizeStream(lcp, stream);
             } catch (err) {
                 debug(err);
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 return Promise.reject(err);
             }
             plainTextSize = cryptoInfo.length;
@@ -212,6 +215,7 @@ export async function transformStream(
                 stream = await stream.reset();
             } catch (err) {
                 debug(err);
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 return Promise.reject(err);
             }
 
@@ -253,12 +257,14 @@ export async function transformStream(
             //     ivBuffer = await streamToBufferPromise(ivRangeStream);
             // } catch (err) {
             //     debug(err);
+            //     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             //     return Promise.reject("OUCH!");
             // }
             // try {
             //     stream = await stream.reset();
             // } catch (err) {
             //     debug(err);
+            //     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             //     return Promise.reject(err);
             // }
 
@@ -272,6 +278,7 @@ export async function transformStream(
                 ivBuffer = await readStream(stream.stream, AES_BLOCK_SIZE);
             } catch (err) {
                 debug(err);
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 return Promise.reject(err);
             }
 
@@ -460,6 +467,7 @@ export async function transformStream(
                 resetedStream = await stream.reset();
             } catch (err) {
                 debug(err);
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 return Promise.reject(err);
             }
 
@@ -495,6 +503,7 @@ export async function getDecryptedSizeStream(
         // or partial cypher + padding)
         const TWO_AES_BLOCK_SIZE = 2 * AES_BLOCK_SIZE;
         if (stream.length < TWO_AES_BLOCK_SIZE) {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject("crypto err");
             return;
         }
@@ -508,6 +517,7 @@ export async function getDecryptedSizeStream(
         //     buff = await streamToBufferPromise(cypherRangeStream);
         // } catch (err) {
         //     debug(err);
+        //     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //     reject("crypto err");
         //     return;
         // }
@@ -561,6 +571,7 @@ export async function getDecryptedSizeStream(
             // debug(decrypted.toString("hex"));
             // debug(decrypted.length);
             if (decrypted.length !== AES_BLOCK_SIZE) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject("decrypted.length !== AES_BLOCK_SIZE");
                 return;
             }
@@ -580,16 +591,19 @@ export async function getDecryptedSizeStream(
         try {
             const buf = await readStream(cypherRangeStream, TWO_AES_BLOCK_SIZE);
             if (!buf) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject("!buf (end?)");
                 return;
             }
             if (buf.length !== TWO_AES_BLOCK_SIZE) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject("buf.length !== TWO_AES_BLOCK_SIZE");
                 return;
             }
             handle(buf.slice(0, AES_BLOCK_SIZE), buf.slice(AES_BLOCK_SIZE));
         } catch (err) {
             debug(err);
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject(err);
             return;
         }
@@ -605,20 +619,24 @@ export async function getDecryptedSizeStream(
 
         //     const ivBuffer = cypherRangeStream.read(AES_BLOCK_SIZE);
         //     if (!ivBuffer) {
+        //         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //         reject("!ivBuffer (end?)");
         //         return;
         //     }
         //     if (ivBuffer.length !== AES_BLOCK_SIZE) {
+        //         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //         reject("ivBuffer.length !== AES_BLOCK_SIZE");
         //         return;
         //     }
 
         //     const encrypted = cypherRangeStream.read(AES_BLOCK_SIZE);
         //     if (!encrypted) {
+        //         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //         reject("!encrypted (end?)");
         //         return;
         //     }
         //     if (encrypted.length !== AES_BLOCK_SIZE) {
+        //         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //         reject("encrypted.length !== AES_BLOCK_SIZE");
         //         return;
         //     }
@@ -635,6 +653,7 @@ export async function getDecryptedSizeStream(
 
         // const handleError = () => {
         //     cleanup();
+        //     // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         //     reject();
         // };
         // cypherRangeStream.on("error", handleError);

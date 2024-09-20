@@ -7,7 +7,7 @@
 
 import * as debug_ from "debug";
 import * as request from "request";
-import * as requestPromise from "request-promise-native";
+// import * as requestPromise from "request-promise-native";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
@@ -229,10 +229,10 @@ export async function launchStatusDocumentProcessing(
         "User-Agent": "Readium2-LCP",
     }, httpHeaders ? httpHeaders : {});
 
-    // No response streaming! :(
-    // https://github.com/request/request-promise/issues/90
-    const needsStreamingResponse = true;
-    if (needsStreamingResponse) {
+    // // No response streaming! :(
+    // // https://github.com/request/request-promise/issues/90
+    // const needsStreamingResponse = true;
+    // if (needsStreamingResponse) {
         request.get({
             headers,
             method: "GET",
@@ -249,21 +249,21 @@ export async function launchStatusDocumentProcessing(
                 }
             })
             .on("error", failure);
-    } else {
-        let response: requestPromise.FullResponse;
-        try {
-            // tslint:disable-next-line:await-promise no-floating-promises
-            response = await requestPromise({
-                headers,
-                method: "GET",
-                resolveWithFullResponse: true,
-                uri: linkStatus.Href,
-            });
-        } catch (err) {
-            failure(err);
-            return;
-        }
+    // } else {
+    //     let response: requestPromise.FullResponse;
+    //     try {
+    //         // tslint:disable-next-line:await-promise no-floating-promises
+    //         response = await requestPromise({
+    //             headers,
+    //             method: "GET",
+    //             resolveWithFullResponse: true,
+    //             uri: linkStatus.Href,
+    //         });
+    //     } catch (err) {
+    //         failure(err);
+    //         return;
+    //     }
 
-        await success(response);
-    }
+    //     await success(response);
+    // }
 }

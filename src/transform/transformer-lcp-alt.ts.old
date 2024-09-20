@@ -486,6 +486,7 @@ export class TransformerLCPAlt extends TransformerLCP {
     //         buff = await streamToBufferPromise(rangeStream);
     //     } catch (err) {
     //         debug(err);
+    //         // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     //         return Promise.reject("OUCH!");
     //     }
 

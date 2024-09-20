@@ -16,7 +16,7 @@ export type JsonPrimitives = string | number | boolean | null;
 export interface JsonMap {
     [key: string]: AnyJson;
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface,@typescript-eslint/no-empty-object-type
 export interface JsonArray extends Array<AnyJson> {
 }
 

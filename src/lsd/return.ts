@@ -7,7 +7,7 @@
 
 import * as debug_ from "debug";
 import * as request from "request";
-import * as requestPromise from "request-promise-native";
+// import * as requestPromise from "request-promise-native";
 
 import { streamToBufferPromise } from "@r2-utils-js/_utils/stream/BufferUtils";
 
@@ -15,6 +15,7 @@ import { LSD } from "../parser/epub/lsd";
 import { TaJsonDeserialize, TaJsonSerialize } from "../serializable";
 import { IDeviceIDManager } from "./deviceid-manager";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-require-imports
 import URITemplate = require("urijs/src/URITemplate");
 
 const debug = debug_("r2:lcp#lsd/return");
@@ -38,6 +39,7 @@ export async function lsdReturn(
     } catch (err) {
         debug(err);
         debug(lsdJSON);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Bad LSD JSON?");
     }
 
@@ -51,9 +53,11 @@ export async function lsdReturn_(
     httpHeaders?: { [key: string]: string; }): Promise<LSD> {
 
     if (!lsd) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("LCP LSD data is missing.");
     }
     if (!lsd.Links) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("No LSD links!");
     }
 
@@ -61,6 +65,7 @@ export async function lsdReturn_(
         return link.Rel === "return";
     });
     if (!licenseReturn) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("No LSD return link!");
     }
 
@@ -69,6 +74,7 @@ export async function lsdReturn_(
         deviceID = await deviceIDManager.getDeviceID();
     } catch (err) {
         debug(err);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Problem getting Device ID !?");
     }
 
@@ -77,6 +83,7 @@ export async function lsdReturn_(
         deviceNAME = await deviceIDManager.getDeviceNAME();
     } catch (err) {
         debug(err);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject("Problem getting Device NAME !?");
     }
 
@@ -97,6 +104,7 @@ export async function lsdReturn_(
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const failure = (err: any) => {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             reject(err);
         };
 
@@ -150,6 +158,7 @@ export async function lsdReturn_(
             try {
                 responseData = await streamToBufferPromise(response);
             } catch (err) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(err);
                 return;
             }
@@ -180,10 +189,10 @@ export async function lsdReturn_(
             "User-Agent": "Readium2-LCP",
         }, httpHeaders ? httpHeaders : {});
 
-        // No response streaming! :(
-        // https://github.com/request/request-promise/issues/90
-        const needsStreamingResponse = true;
-        if (needsStreamingResponse) {
+        // // No response streaming! :(
+        // // https://github.com/request/request-promise/issues/90
+        // const needsStreamingResponse = true;
+        // if (needsStreamingResponse) {
             request.put({
                 headers,
                 method: "PUT",
@@ -200,22 +209,22 @@ export async function lsdReturn_(
                     }
                 })
                 .on("error", failure);
-        } else {
-            let response: requestPromise.FullResponse;
-            try {
-                // tslint:disable-next-line:await-promise no-floating-promises
-                response = await requestPromise({
-                    headers,
-                    method: "PUT",
-                    resolveWithFullResponse: true,
-                    uri: returnURL,
-                });
-            } catch (err) {
-                failure(err);
-                return;
-            }
+        // } else {
+        //     let response: requestPromise.FullResponse;
+        //     try {
+        //         // tslint:disable-next-line:await-promise no-floating-promises
+        //         response = await requestPromise({
+        //             headers,
+        //             method: "PUT",
+        //             resolveWithFullResponse: true,
+        //             uri: returnURL,
+        //         });
+        //     } catch (err) {
+        //         failure(err);
+        //         return;
+        //     }
 
-            await success(response);
-        }
+        //     await success(response);
+        // }
     });
 }

@@ -11,7 +11,7 @@ import * as debug_ from "debug";
 import * as fs from "fs";
 import * as path from "path";
 import * as request from "request";
-import * as requestPromise from "request-promise-native";
+// import * as requestPromise from "request-promise-native";
 // https://github.com/edcarroll/ta-json
 import { JsonElementType, JsonObject, JsonProperty } from "ta-json-x";
 
@@ -169,9 +169,11 @@ export class LCP {
 
         // this.init();
         if (!this.isNativeNodePlugin()) {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject("direct decrypt buffer only for native plugin");
         }
         if (!this._lcpContext) {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject("LCP context not initialized (call tryUserKeys())");
         }
 
@@ -185,6 +187,7 @@ export class LCP {
                     if (er) {
                         debug("decrypt ERROR");
                         debug(er);
+                        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                         reject(er);
                         return;
                     }
@@ -230,6 +233,7 @@ export class LCP {
                         if (erro) {
                             debug("dummyCreateContext ERROR");
                             debug(erro);
+                            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                             reject(erro);
                             return;
                         }
@@ -266,6 +270,7 @@ export class LCP {
             debug(this.Encryption.ContentKey.Algorithm);
             debug(this.Encryption.UserKey.Algorithm);
 
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject("Incorrect LCP fields.");
         }
 
@@ -283,6 +288,7 @@ export class LCP {
                         if (err) {
                             debug("findOneValidPassphrase ERROR");
                             debug(err);
+                            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                             reject(err);
                             return;
                         }
@@ -297,6 +303,7 @@ export class LCP {
                                 if (erro) {
                                     debug("createContext ERROR");
                                     debug(erro);
+                                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                                     reject(erro);
                                     return;
                                 }
@@ -353,6 +360,7 @@ export class LCP {
                 // ignore
             }
         }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         return Promise.reject(1); // "Passphrase fail."
     }
 
@@ -467,6 +475,7 @@ export class LCP {
             // }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const failure = (err: any) => {
+                // // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 // reject(err);
                 debug(err);
                 resolve(DUMMY_CRL);
@@ -522,6 +531,7 @@ export class LCP {
                 try {
                     responseData = await streamToBufferPromise(response);
                 } catch (err) {
+                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(err);
                     return;
                 }
@@ -539,10 +549,10 @@ export class LCP {
                 // "Accept-Language": "en-UK,en-US;q=0.7,en;q=0.5",
             };
 
-            // No response streaming! :(
-            // https://github.com/request/request-promise/issues/90
-            const needsStreamingResponse = true;
-            if (needsStreamingResponse) {
+            // // No response streaming! :(
+            // // https://github.com/request/request-promise/issues/90
+            // const needsStreamingResponse = true;
+            // if (needsStreamingResponse) {
                 request.get({
                     headers,
                     method: "GET",
@@ -559,23 +569,23 @@ export class LCP {
                         }
                     })
                     .on("error", failure);
-            } else {
-                let response: requestPromise.FullResponse;
-                try {
-                    // tslint:disable-next-line:await-promise no-floating-promises
-                    response = await requestPromise({
-                        headers,
-                        method: "GET",
-                        resolveWithFullResponse: true,
-                        uri: crlURL,
-                    });
-                } catch (err) {
-                    failure(err);
-                    return;
-                }
+            // } else {
+            //     let response: requestPromise.FullResponse;
+            //     try {
+            //         // tslint:disable-next-line:await-promise no-floating-promises
+            //         response = await requestPromise({
+            //             headers,
+            //             method: "GET",
+            //             resolveWithFullResponse: true,
+            //             uri: crlURL,
+            //         });
+            //     } catch (err) {
+            //         failure(err);
+            //         return;
+            //     }
 
-                await success(response);
-            }
+            //     await success(response);
+            // }
         });
     }
 
