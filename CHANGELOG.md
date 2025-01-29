@@ -1,14 +1,32 @@
 # Next
 
 Git diff:
-* https://github.com/readium/r2-lcp-js/compare/v1.0.42...develop
+* https://github.com/readium/r2-lcp-js/compare/v1.0.43...develop
 
 Changes:
 * TODO
 
+# 1.0.43
+
+> Build environment: NodeJS `22.12.0`, NPM `11.0.0`
+
+Changes:
+* NPM package updates
+* Updated Flox/Nix (dev)
+
+Git revision info:
+* https://unpkg.com/r2-lcp-js@1.0.43/dist/gitrev.json
+* https://github.com/edrlab/r2-lcp-js-dist/blob/v1.0.43/dist/gitrev.json
+
+Git commit history:
+* https://github.com/readium/r2-lcp-js/commits/v1.0.43
+
+Git diff:
+* https://github.com/readium/r2-lcp-js/compare/v1.0.42...v1.0.43
+
 # 1.0.42
 
-> > Build environment: NodeJS `22.11.0`, NPM `11.0.0`
+> Build environment: NodeJS `22.11.0`, NPM `11.0.0`
 
 Changes:
 * NPM package updates
@@ -26,7 +44,7 @@ Git diff:
 
 # 1.0.41
 
-> > Build environment: NodeJS `20.17.0`, NPM `10.8.3`
+> Build environment: NodeJS `20.17.0`, NPM `10.8.3`
 
 Changes:
 * NPM package updates
